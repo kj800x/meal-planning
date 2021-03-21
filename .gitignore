@@ -1,0 +1,5 @@
+# Ignore anything in the root other than these directories. Other directories are expected to be data directories
+/*/
+!/server
+!/ui
+!/s-exp-parser

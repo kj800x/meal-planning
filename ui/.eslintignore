@@ -1,0 +1,5 @@
+.eslintrc.js
+build/*
+gen-fragments.js
+*.min.js
+*.test.js
