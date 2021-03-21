@@ -8,16 +8,16 @@ import {
 } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { IndexPage } from "./pages/index-page/IndexPage";
-import { RecipePage } from "./pages/recipe-page/RecipePage";
+import { HomePage } from "./pages/home/HomePage";
+import { RecipePage } from "./pages/recipe/RecipePage";
 
 function App() {
   return (
     <DndProvider backend={HTML5Backend}>
       <Router basename={process.env.PUBLIC_URL}>
         <Switch>
-          <Route exact path={`/`}>
-            <IndexPage />
+          <Route exact path="/">
+            <HomePage />
           </Route>
           <Route
             path="/recipe/:id"

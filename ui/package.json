@@ -1,5 +1,5 @@
 {
-  "name": "webripper-ui",
+  "name": "meal-planning-ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -51,8 +51,8 @@
       "last 1 chrome version"
     ]
   },
-  "##homepage": "/webripper/",
-  "proxy": "http://localhost",
+  "##homepage": "/meals/",
+  "proxy": "https://localhost",
   "devDependencies": {
     "@kj800x/localproxy-react-scripts": "0.3.0"
   }
