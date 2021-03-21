@@ -1,15 +1,6 @@
 import betterSqlite3 from "better-sqlite3";
 import path from "path";
 import { DATA_DIR } from "./env/dataDir";
-// import fs from "fs";
-// import { migrator } from "./migrations";
-
-// if (!fs.existsSync(path.resolve(DATA_DIR, "db.db"))) {
-//   const dataMigrator = migrator.useDataDir(DATA_DIR);
-
-//   console.log(dataMigrator);
-//   dataMigrator.migrate();
-// }
 
 export const db = betterSqlite3(
   path.resolve(DATA_DIR, "db.db") /*, { verbose: console.log }*/

@@ -13,6 +13,9 @@ export const Ingredient = {
     name: get("name"),
     image: get("image"),
     groceryAisle: ({ groceryAisleId }, _, context) => {
+      if (!groceryAisleId) {
+        return null;
+      }
       return context.dataLoaders.GroceryAisle.load(groceryAisleId);
     },
   },
