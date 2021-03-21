@@ -1,8 +1,6 @@
 {
-  "name": "webripper",
-  "version": "1.0.0",
-  "description": "",
-  "main": "cli.js",
+  "name": "meal-planning-server",
+  "private": true,
   "dependencies": {
     "@kj800x/localproxy-client": "0.3.0",
     "apollo-server-express": "^2.15.0",
@@ -44,7 +42,6 @@
     "request-progress": "^3.0.0",
     "sqlite3": "^4.1.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "thumbsupply": "github:kj800x/thumbsupply#kj-image-support",
     "time-ago": "^0.2.1",
     "tmp": "^0.1.0",
     "xo": "^0.33.1"
@@ -60,8 +57,8 @@
   "scripts": {
     "start": "node -r esm src/migrations/runMigrations.js && node -r esm src/server.js",
     "cli": "node -r esm src/migrations/runMigrations.js && node -r esm src/cli/cli.js",
-    "import-hello-fresh": "RECIPE_DIR=/home/kevin/recipes node -r esm src/cli/importHelloFresh.js"
+    "import-hello-fresh": "RECIPE_DIR=/hdd/crawl-hello-fresh/out/recipes node -r esm src/cli/importHelloFresh.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Kevin Johnson <kj800x@gmail.com>",
+  "license": "MIT"
 }
