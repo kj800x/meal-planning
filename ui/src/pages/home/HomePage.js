@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { Header } from "../../library/Header";
+import { MealPlan } from "./MealPlan";
+import { RecipeSearch } from "./RecipeSearch";
+import { RecipeResults } from "./RecipeResults";
 
 const Wrapper = styled.div`
   max-width: 1200px;
   margin: 12px auto;
-  background: blue;
+  background: lightblue;
 `;
 
 export const HomePage = () => {
-  return <Wrapper>H</Wrapper>;
+  const [query, setQuery] = useState("");
+
+  return (
+    <>
+      <Header />
+      <Wrapper>
+        <MealPlan />
+        <RecipeSearch value={query} onChange={setQuery} />
+        <RecipeResults query={query} />
+      </Wrapper>
+    </>
+  );
 };

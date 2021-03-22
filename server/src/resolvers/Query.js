@@ -1,6 +1,6 @@
 import { db } from "../db";
 // import { runIngredientSearch } from "../services/ingredientSearch";
-// import { runRecipeSearch } from "../services/recipeSearch";
+import { runRecipeSearch } from "../services/recipeSearch";
 
 const FETCH_ALL_GROCERY_AISLES = db
   .prepare("SELECT id FROM GroceryAisle ORDER BY ordering ASC")
@@ -29,11 +29,11 @@ export const Query = {
       };
     },
 
-    searchRecipes: (_parent, { sExpQuery, limit, offset }, context, _info) => {
-      // const { recipes, total } = runRecipeSearch({ sExpQuery, limit, offset });
+    searchRecipes: (_parent, { query, limit, offset }, context, _info) => {
+      const { recipes, total } = runRecipeSearch({ query, limit, offset });
       return {
-        recipes: [], //context.dataLoaders.Recipe.loadMany(recipes),
-        total: 0,
+        recipes: context.dataLoaders.Recipe.loadMany(recipes),
+        total: total,
       };
     },
   },

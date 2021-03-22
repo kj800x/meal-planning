@@ -4,6 +4,19 @@ import App from "./App";
 import Modal from "react-modal";
 import "./index.css";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: "/meals/graphql",
+  cache: new InMemoryCache(),
+});
+
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById("root")
+);
 
 Modal.setAppElement("#root");

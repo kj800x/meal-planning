@@ -106,7 +106,7 @@ export const typeDefs = gql`
       offset: Int = 0
     ): IngredientResultPage!
     searchRecipes(
-      sExpQuery: String!
+      query: String!
       limit: Int = 30
       offset: Int = 0
     ): RecipeSearchResultPage!
