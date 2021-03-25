@@ -97,6 +97,32 @@ export const typeDefs = gql`
     total: Int!
   }
 
+  type ScheduledExtraIngredient {
+    id: Int!
+    ingredient: Ingredient!
+    quantity: Float!
+    unit: String!
+    mealPlan: MealPlan!
+  }
+  type ScheduledMeal {
+    id: Int!
+    type: String!
+    servings: Int!
+    date: Int
+    recipe: Recipe!
+    mealPlan: MealPlan!
+  }
+  type MealPlan {
+    id: Int!
+    breakfastSlots: Int!
+    lunchSlots: Int!
+    dinnerSlots: Int!
+    start: Int!
+    end: Int!
+    extraIngredients: [ScheduledExtraIngredient!]!
+    meals: [ScheduledMeal!]!
+  }
+
   type Query {
     groceryAisles: [GroceryAisle!]!
     recipe(id: Int): Recipe
@@ -110,6 +136,8 @@ export const typeDefs = gql`
       limit: Int = 30
       offset: Int = 0
     ): RecipeSearchResultPage!
+    mealPlans: [MealPlan!]!
+    currentMealPlan: MealPlan
   }
 
   schema {

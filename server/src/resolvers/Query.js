@@ -6,6 +6,14 @@ const FETCH_ALL_GROCERY_AISLES = db
   .prepare("SELECT id FROM GroceryAisle ORDER BY ordering ASC")
   .pluck();
 
+const FETCH_ALL_MEAL_PLANS = db
+  .prepare("SELECT id FROM MealPlan ORDER BY end DESC")
+  .pluck();
+
+const FETCH_LATEST_MEAL_PLAN = db
+  .prepare("SELECT id FROM MealPlan ORDER BY end DESC LIMIT 1")
+  .pluck();
+
 export const Query = {
   resolver: {
     groceryAisles: (_parent, _args, context, _info) => {
@@ -35,6 +43,16 @@ export const Query = {
         recipes: context.dataLoaders.Recipe.loadMany(recipes),
         total: total,
       };
+    },
+
+    mealPlans: (_parent, _args, context, _info) => {
+      const ids = FETCH_ALL_MEAL_PLANS.all();
+      return context.dataLoaders.MealPlan.loadMany(ids);
+    },
+
+    currentMealPlan: (_parent, _args, context, _info) => {
+      const id = FETCH_LATEST_MEAL_PLAN.get();
+      return context.dataLoaders.MealPlan.load(id);
     },
   },
 };

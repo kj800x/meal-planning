@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import { Switch } from "../../library/Switch";
+import { gql, useQuery } from "@apollo/client";
 
 const Wrapper = styled.div`
   min-height: 200px;
@@ -10,7 +11,7 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   display: flex;
-  padding: 2px;
+  padding: 8px;
   align-items: space-between;
   justify-content: space-between;
   font-weight: 600;
@@ -18,6 +19,7 @@ const Header = styled.div`
 `;
 
 const Grid = styled.div`
+  padding: 8px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
 `;
@@ -164,8 +166,37 @@ const DatedPlan = () => {
   return null;
 };
 
+const CURRENT_PLAN = gql`
+  query {
+    mealPlans {
+      breakfastSlots
+      lunchSlots
+      dinnerSlots
+      start
+      end
+      extraIngredients {
+        quantity
+        unit
+        ingredient {
+          name
+        }
+      }
+      meals {
+        type
+        servings
+        recipe {
+          title
+        }
+        date
+      }
+    }
+  }
+`;
+
 export const MealPlan = ({}) => {
   const [enableDates, setEnableDates] = useState(false);
+
+  const { data, loading, error } = useQuery(CURRENT_PLAN);
 
   return (
     <Wrapper>

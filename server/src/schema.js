@@ -16,6 +16,9 @@ import { RecipeStep } from "./resolvers/RecipeStep";
 import { Utensil } from "./resolvers/Utensil";
 import { Yield } from "./resolvers/Yield";
 import { Query } from "./resolvers/Query";
+import { MealPlan } from "./resolvers/MealPlan";
+import { ScheduledExtraIngredient } from "./resolvers/ScheduledExtraIngredient";
+import { ScheduledMeal } from "./resolvers/ScheduledMeal";
 import { buildDataLoaders } from "./dataLoaders";
 
 const domainObjects = {
@@ -28,6 +31,9 @@ const domainObjects = {
   RecipeStep,
   Utensil,
   Yield,
+  MealPlan,
+  ScheduledExtraIngredient,
+  ScheduledMeal,
 };
 
 const resolvers = {
