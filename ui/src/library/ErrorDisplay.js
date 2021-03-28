@@ -30,7 +30,7 @@ const ErrorBoxContent = styled.pre`
   white-space: pre-line;
 `;
 
-export const ErrorDisplay = ({ error }) => (
+export const ErrorDisplay = ({ error = new Error() }) => (
   <ErrorContainer>
     <h2>Sorry, there was an error.</h2>
     <ErrorBox>

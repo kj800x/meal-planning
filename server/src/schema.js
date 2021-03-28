@@ -20,6 +20,7 @@ import { MealPlan } from "./resolvers/MealPlan";
 import { ScheduledExtraIngredient } from "./resolvers/ScheduledExtraIngredient";
 import { ScheduledMeal } from "./resolvers/ScheduledMeal";
 import { buildDataLoaders } from "./dataLoaders";
+import { Mutation } from "./resolvers/Mutation";
 
 const domainObjects = {
   Allergen,
@@ -43,6 +44,7 @@ const resolvers = {
 
   ...mapValues(domainObjects, (v) => v.resolver),
 
+  Mutation: Mutation.resolver,
   Query: Query.resolver,
 };
 

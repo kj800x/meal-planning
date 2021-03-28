@@ -98,7 +98,7 @@ export const RecipeResults = ({ query }) => {
   return (
     <div>
       {data.searchRecipes.recipes.map((recipe) => (
-        <Recipe id={recipe.id} recipe={recipe} />
+        <Recipe key={recipe.id} recipe={recipe} />
       ))}
     </div>
   );

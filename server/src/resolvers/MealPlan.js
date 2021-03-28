@@ -23,7 +23,7 @@ export const MealPlan = {
 
     extraIngredients: ({ id }, _, context) => {
       const ids = FETCH_EXTRA_INGREDIENTS.all(id);
-      return context.dataLoaders.ScheduledIngredientExtra.loadMany(ids);
+      return context.dataLoaders.ScheduledExtraIngredient.loadMany(ids);
     },
     meals: ({ id }, _, context) => {
       const ids = FETCH_MEALS.all(id);

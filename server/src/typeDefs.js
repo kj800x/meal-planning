@@ -108,7 +108,7 @@ export const typeDefs = gql`
     id: Int!
     type: String!
     servings: Int!
-    date: Int
+    date: Date
     recipe: Recipe!
     mealPlan: MealPlan!
   }
@@ -117,8 +117,8 @@ export const typeDefs = gql`
     breakfastSlots: Int!
     lunchSlots: Int!
     dinnerSlots: Int!
-    start: Int!
-    end: Int!
+    start: Date!
+    end: Date!
     extraIngredients: [ScheduledExtraIngredient!]!
     meals: [ScheduledMeal!]!
   }
@@ -140,7 +140,12 @@ export const typeDefs = gql`
     currentMealPlan: MealPlan
   }
 
+  type Mutation {
+    createPlan: MealPlan!
+  }
+
   schema {
     query: Query
+    mutation: Mutation
   }
 `;
