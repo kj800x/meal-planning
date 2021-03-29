@@ -5,6 +5,9 @@ import { order } from "./util/loaderOrderer";
 const MEAL_LOADER = db.prepareIn(
   "SELECT * FROM ScheduledMeal WHERE id IN (!?!)"
 );
+const FETCH_INGREDIENTS = db
+  .prepare("SELECT id FROM Yield WHERE recipeId = ? AND servings = ?")
+  .pluck();
 
 export const ScheduledMeal = {
   resolver: {
@@ -18,6 +21,10 @@ export const ScheduledMeal = {
     },
     mealPlan: ({ mealPlanId }, _, context) => {
       return context.dataLoaders.MealPlan.load(mealPlanId);
+    },
+    ingredients: ({ recipeId, servings }, _, context) => {
+      const yieldIds = FETCH_INGREDIENTS.all(recipeId, servings);
+      return context.dataLoaders.Yield.loadMany(yieldIds);
     },
   },
   loader: async (ids) => {

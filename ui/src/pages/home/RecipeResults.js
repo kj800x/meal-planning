@@ -4,6 +4,7 @@ import { Loading } from "../../library/Loading";
 import { ErrorDisplay } from "../../library/ErrorDisplay";
 import { gql } from "@apollo/client";
 import styled from "styled-components";
+import { useDrag } from "react-dnd";
 
 const SEARCH_RECIPES = gql`
   query($query: String!) {
@@ -54,7 +55,7 @@ const Servings = styled.div`
   flex-direction: row;
   justify-content: flex-end;
 `;
-const ValidServing = styled.div`
+const ValidServingWrapper = styled.div`
   border: 1px solid black;
   padding: 2px 4px;
   margin: 8px 4px;
@@ -65,6 +66,22 @@ const ValidServing = styled.div`
   }
 `;
 
+const ValidServing = ({ serving, recipe }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: "Yield",
+    item: () => ({ recipeId: recipe.id, servings: serving }),
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  return (
+    <ValidServingWrapper ref={drag} isDragging={isDragging}>
+      {serving}
+    </ValidServingWrapper>
+  );
+};
+
 const Recipe = ({ recipe }) => {
   return (
     <RecipeWrapper>
@@ -73,9 +90,9 @@ const Recipe = ({ recipe }) => {
         <RecipeTitle>{recipe.title}</RecipeTitle>
         <RecipeDescription>{recipe.description}</RecipeDescription>
         <Servings>
-          {recipe.validServings.map((serving) => {
-            return <ValidServing key={serving}>{serving}</ValidServing>;
-          })}
+          {recipe.validServings.map((serving) => (
+            <ValidServing key={serving} serving={serving} recipe={recipe} />
+          ))}
         </Servings>
       </RecipeContent>
     </RecipeWrapper>

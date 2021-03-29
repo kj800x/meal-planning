@@ -1,25 +1,21 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import { Switch } from "../../../library/Switch";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Loading } from "../../../library/Loading";
 import { ErrorDisplay } from "../../../library/ErrorDisplay";
 import { DatedPlan } from "./DatedPlan";
 import { DatelessPlan } from "./DatelessPlan";
+import { PlanHeader } from "./PlanHeader";
 
 const Wrapper = styled.div`
   min-height: 200px;
   background: yellow;
 `;
-
-const Header = styled.div`
+const ButtonWrapper = styled(Wrapper)`
+  align-items: center;
+  justify-content: center;
   display: flex;
-  padding: 8px;
-  align-items: space-between;
-  justify-content: space-between;
-  font-weight: 600;
-  border-bottom: 2px solid blue;
 `;
 
 const PLANS = gql`
@@ -39,10 +35,12 @@ const PLANS = gql`
         }
       }
       meals {
+        id
         type
         servings
         recipe {
           title
+          image
         }
         date
       }
@@ -67,10 +65,12 @@ const CREATE_PLAN = gql`
         }
       }
       meals {
+        id
         type
         servings
         recipe {
           title
+          image
         }
         date
       }
@@ -78,11 +78,11 @@ const CREATE_PLAN = gql`
   }
 `;
 
-export const MealPlan = ({}) => {
+export const MealPlan = ({ id: initialId = null }) => {
   const [enableDates, setEnableDates] = useState(false);
   const { data, loading, error } = useQuery(PLANS);
   const [createPlan] = useMutation(CREATE_PLAN);
-  const [currentPlanId, setCurrentPlanId] = useState(null);
+  const [currentPlanId, setCurrentPlanId] = useState(initialId);
   useEffect(() => {
     if (
       currentPlanId === null &&
@@ -112,15 +112,9 @@ export const MealPlan = ({}) => {
 
   if (data.mealPlans.length === 0) {
     return (
-      <Wrapper
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
+      <ButtonWrapper>
         <button onClick={createPlan}>Create Meal Plan</button>
-      </Wrapper>
+      </ButtonWrapper>
     );
   }
 
@@ -134,26 +128,11 @@ export const MealPlan = ({}) => {
 
   return (
     <Wrapper>
-      <Header>
-        <span>
-          {new Date(mealPlan.start).toLocaleDateString("en-us", {
-            weekday: "short",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}{" "}
-          -{" "}
-          {new Date(mealPlan.end).toLocaleDateString("en-us", {
-            weekday: "short",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </span>
-        <span>
-          Use dates: <Switch enabled={enableDates} onChange={setEnableDates} />
-        </span>
-      </Header>
+      <PlanHeader
+        mealPlan={mealPlan}
+        setEnableDates={setEnableDates}
+        enableDates={enableDates}
+      />
       {enableDates ? (
         <DatedPlan plan={mealPlan} />
       ) : (

@@ -54,5 +54,9 @@ export const Query = {
       const id = FETCH_LATEST_MEAL_PLAN.get();
       return context.dataLoaders.MealPlan.load(id);
     },
+
+    mealPlan: (_parent, { id }, context, _info) => {
+      return context.dataLoaders.MealPlan.load(id);
+    },
   },
 };

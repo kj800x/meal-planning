@@ -6,7 +6,7 @@ const PlaceholderWrapper = styled.div`
   border: 1px dashed gray;
   padding: 2px;
   text-align: center;
-  height: 16px;
+  height: 45px;
 `;
 
 export const Placeholder = () => {

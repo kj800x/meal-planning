@@ -1,9 +1,8 @@
 import React from "react";
-import { ExtraIngredient } from "./ExtraIngredient";
 import { Grid, ColumnHeader } from "./Grid";
 import { Placeholder } from "./Placeholder";
 import { ScheduledMeal } from "./ScheduledMeal";
-import { arrayOfSize, groupByType } from "./util";
+import { DropTarget } from "./DropTarget";
 
 const getDays = ({ start, end }) => {
   const days = [];
@@ -17,8 +16,8 @@ const getDays = ({ start, end }) => {
   return days;
 };
 
-const MealDate = ({ type, date, meals }) => {
-  const filteredMeals = meals.filter(
+const MealDate = ({ type, date, plan }) => {
+  const filteredMeals = plan.meals.filter(
     (meal) => meal.date === date && meal.type === type
   );
 
@@ -39,8 +38,8 @@ const MealDate = ({ type, date, meals }) => {
   );
 };
 
-const MealRow = ({ type, days, meals }) => {
-  const unscheduledMeals = meals.filter(
+const MealRow = ({ type, days, plan }) => {
+  const unscheduledMeals = plan.meals.filter(
     (meal) => meal.date == null && meal.type === type
   );
 
@@ -48,13 +47,15 @@ const MealRow = ({ type, days, meals }) => {
     <>
       <ColumnHeader>{type}</ColumnHeader>
       {days.map((day) => (
-        <MealDate key={day} type={type} date={day} meals={meals} />
+        <DropTarget key={day} plan={plan} type={type} date={day}>
+          <MealDate type={type} date={day} plan={plan} />
+        </DropTarget>
       ))}
-      <div>
+      <DropTarget plan={plan} type={type} date={null}>
         {unscheduledMeals.map((meal) => (
           <ScheduledMeal key={meal.id} meal={meal} />
         ))}
-      </div>
+      </DropTarget>
     </>
   );
 };
@@ -86,45 +87,10 @@ export const DatedPlan = ({ plan }) => {
     <Grid columns={days.length + 2}>
       <DatedHeader days={days} />
 
-      <MealRow type="Breakfast" days={days} meals={plan.meals} />
-      <MealRow type="Lunch" days={days} meals={plan.meals} />
-      <MealRow type="Snack" days={days} meals={plan.meals} />
-      <MealRow type="Dinner" days={days} meals={plan.meals} />
-
-      {/* <div>
-        {groupedPlan.breakfasts.map((meal) => (
-          <ScheduledMeal meal={meal} key={meal.id} />
-        ))}
-        {arrayOfSize(groupedPlan.breakfastPlaceholders).map((i) => (
-          <Placeholder key={i} />
-        ))}
-      </div>
-      <div>
-        {groupedPlan.lunches.map((meal) => (
-          <ScheduledMeal meal={meal} key={meal.id} />
-        ))}
-        {arrayOfSize(groupedPlan.lunchPlaceholders).map((i) => (
-          <Placeholder key={i} />
-        ))}
-      </div>
-      <div>
-        {groupedPlan.dinners.map((meal) => (
-          <ScheduledMeal meal={meal} key={meal.id} />
-        ))}
-        {arrayOfSize(groupedPlan.dinnerPlaceholders).map((i) => (
-          <Placeholder key={i} />
-        ))}
-      </div>
-      <div>
-        {groupedPlan.snacks.map((meal) => (
-          <ScheduledMeal meal={meal} key={meal.id} />
-        ))}
-      </div>
-      <div>
-        {groupedPlan.extraIngredients.map((extra) => (
-          <ExtraIngredient extra={extra} key={extra.id} />
-        ))}
-      </div> */}
+      <MealRow type="Breakfast" days={days} plan={plan} />
+      <MealRow type="Lunch" days={days} plan={plan} />
+      <MealRow type="Snack" days={days} plan={plan} />
+      <MealRow type="Dinner" days={days} plan={plan} />
     </Grid>
   );
 };

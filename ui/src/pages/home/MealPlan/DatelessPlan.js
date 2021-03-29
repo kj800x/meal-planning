@@ -1,4 +1,5 @@
 import React from "react";
+import { DropTarget } from "./DropTarget";
 import { ExtraIngredient } from "./ExtraIngredient";
 import { Grid, ColumnHeader } from "./Grid";
 import { Placeholder } from "./Placeholder";
@@ -16,35 +17,35 @@ export const DatelessPlan = ({ plan }) => {
       <ColumnHeader>Snacks</ColumnHeader>
       <ColumnHeader>Extras</ColumnHeader>
 
-      <div>
+      <DropTarget plan={plan} type="Breakfast" date={null}>
         {groupedPlan.breakfasts.map((meal) => (
           <ScheduledMeal meal={meal} key={meal.id} />
         ))}
         {arrayOfSize(groupedPlan.breakfastPlaceholders).map((i) => (
           <Placeholder key={i} />
         ))}
-      </div>
-      <div>
+      </DropTarget>
+      <DropTarget plan={plan} type="Lunch" date={null}>
         {groupedPlan.lunches.map((meal) => (
           <ScheduledMeal meal={meal} key={meal.id} />
         ))}
         {arrayOfSize(groupedPlan.lunchPlaceholders).map((i) => (
           <Placeholder key={i} />
         ))}
-      </div>
-      <div>
+      </DropTarget>
+      <DropTarget plan={plan} type="Dinner" date={null}>
         {groupedPlan.dinners.map((meal) => (
           <ScheduledMeal meal={meal} key={meal.id} />
         ))}
         {arrayOfSize(groupedPlan.dinnerPlaceholders).map((i) => (
           <Placeholder key={i} />
         ))}
-      </div>
-      <div>
+      </DropTarget>
+      <DropTarget plan={plan} type="Snack" date={null}>
         {groupedPlan.snacks.map((meal) => (
           <ScheduledMeal meal={meal} key={meal.id} />
         ))}
-      </div>
+      </DropTarget>
       <div>
         {groupedPlan.extraIngredients.map((extra) => (
           <ExtraIngredient extra={extra} key={extra.id} />

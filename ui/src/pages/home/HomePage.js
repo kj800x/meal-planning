@@ -6,7 +6,7 @@ import { RecipeSearch } from "./RecipeSearch";
 import { RecipeResults } from "./RecipeResults";
 
 const Wrapper = styled.div`
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 12px auto;
   background: lightblue;
 `;

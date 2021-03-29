@@ -111,6 +111,7 @@ export const typeDefs = gql`
     date: Date
     recipe: Recipe!
     mealPlan: MealPlan!
+    ingredients: [Yield!]!
   }
   type MealPlan {
     id: Int!
@@ -138,10 +139,20 @@ export const typeDefs = gql`
     ): RecipeSearchResultPage!
     mealPlans: [MealPlan!]!
     currentMealPlan: MealPlan
+    mealPlan(id: Int!): MealPlan
   }
 
   type Mutation {
     createPlan: MealPlan!
+    planRecipe(
+      planId: Int!
+      recipeId: Int!
+      servings: Int!
+      type: String!
+      date: Date
+    ): MealPlan!
+    moveMeal(mealId: Int!, type: String!, date: Date): MealPlan!
+    cancelMeal(mealId: Int!): MealPlan!
   }
 
   schema {

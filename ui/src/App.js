@@ -10,6 +10,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { HomePage } from "./pages/home/HomePage";
 import { RecipePage } from "./pages/recipe/RecipePage";
+import { ShoppingListPage } from "./pages/shopping-list/ShoppingListPage";
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
           <Route
             path="/recipe/:id"
             render={(props) => <RecipePage {...props} />}
+          />
+          <Route
+            path="/plan/:id/shopping-list"
+            render={(props) => <ShoppingListPage {...props} />}
           />
           <Route>
             <Redirect to="/" />
