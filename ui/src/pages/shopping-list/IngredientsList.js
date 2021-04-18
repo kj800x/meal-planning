@@ -12,7 +12,26 @@ const collect = (collector) => (array) => {
   return out;
 };
 
-const reduceEntries = (entries) => {};
+// const collect = (collector) => (array) =>
+//   array.reduce((acc, value) => {
+//     const key = collector(value);
+//     if (!acc[key]) {
+//       acc[key] = [];
+//     }
+//     acc[key].push(value);
+//   }, {});
+
+const reduceEntries = (entries) => {
+  const output = {};
+  for (const entry of entries) {
+    if (!output[entry.unit]) {
+      output[entry.unit] = { ...entry };
+    } else {
+      output[entry.unit].quantity += entry.quantity;
+    }
+  }
+  return Object.values(output);
+};
 
 const Wrapper = styled.div``;
 const GroupWrapper = styled.div``;
@@ -26,11 +45,17 @@ const Ingredient = ({ entries }) => {
   return (
     <IngredientWrapper>
       <IngredientName>{entries[0].ingredient.name}</IngredientName>
-      {simplifiedEntries.map((entry, i) => (
-        <span key={i}>
-          {entry.quantity} {entry.unit}
-        </span>
-      ))}
+      {simplifiedEntries.map((entry, i) => {
+        if (entry.unit === "UNITLESS") {
+          return null;
+        }
+
+        return (
+          <span key={i}>
+            {entry.quantity} {entry.unit}
+          </span>
+        );
+      })}
     </IngredientWrapper>
   );
 };
@@ -43,8 +68,6 @@ const IngredientGroups = ({ group, groupedIngredients }) => {
   const accumulateIngredients = collect((y) => y.ingredient.id)(
     groupedIngredients[group]
   );
-
-  console.log(accumulateIngredients);
 
   return (
     <GroupWrapper>
@@ -62,8 +85,6 @@ export const IngredientsList = ({ plan }) => {
     (i) => (i.groceryAisle && i.groceryAisle.id) || -1
   )(allIngredients);
 
-  console.log(groupedIngredients);
-
   return (
     <Wrapper>
       {Object.keys(groupedIngredients).map((group) => (
@@ -75,6 +96,4 @@ export const IngredientsList = ({ plan }) => {
       ))}
     </Wrapper>
   );
-
-  return null;
 };

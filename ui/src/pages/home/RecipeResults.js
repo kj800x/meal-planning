@@ -6,6 +6,13 @@ import { gql } from "@apollo/client";
 import styled from "styled-components";
 import { useDrag } from "react-dnd";
 
+const Wrapper = styled.div`
+  flex: 1;
+  height: 200;
+  overflow: auto;
+  background: skyblue;
+`;
+
 const SEARCH_RECIPES = gql`
   query($query: String!) {
     searchRecipes(query: $query, limit: 50, offset: 0) {
@@ -113,10 +120,10 @@ export const RecipeResults = ({ query }) => {
   }
 
   return (
-    <div>
+    <Wrapper>
       {data.searchRecipes.recipes.map((recipe) => (
         <Recipe key={recipe.id} recipe={recipe} />
       ))}
-    </div>
+    </Wrapper>
   );
 };
