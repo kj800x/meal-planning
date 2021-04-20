@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { Header } from "../../library/Header";
-import { MealPlan } from "../home/MealPlan";
+import { Header } from "../../../library/Header";
+// import { MealPlan } from "../../home/MealPlan";
 import { useParams } from "react-router";
 import { useQuery, gql } from "@apollo/client";
-import { Loading } from "../../library/Loading";
-import { ErrorDisplay } from "../../library/ErrorDisplay";
+import { Loading } from "../../../library/Loading";
+import { ErrorDisplay } from "../../../library/ErrorDisplay";
 import { IngredientsList } from "./IngredientsList";
 
 const PLAN_WITH_INGREDIENTS = gql`
@@ -88,7 +88,7 @@ export const ShoppingListPage = () => {
     <>
       <Header />
       <Wrapper>
-        <MealPlan id={id} />
+        {/* <MealPlan id={id} /> */}
         <IngredientsList plan={data.mealPlan} />
       </Wrapper>
     </>
