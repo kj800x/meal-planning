@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 const collect = (collector) => (array) => {
@@ -12,15 +11,6 @@ const collect = (collector) => (array) => {
   return out;
 };
 
-// const collect = (collector) => (array) =>
-//   array.reduce((acc, value) => {
-//     const key = collector(value);
-//     if (!acc[key]) {
-//       acc[key] = [];
-//     }
-//     acc[key].push(value);
-//   }, {});
-
 const reduceEntries = (entries) => {
   const output = {};
   for (const entry of entries) {
@@ -33,7 +23,9 @@ const reduceEntries = (entries) => {
   return Object.values(output);
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  width: 1600px;
+`;
 const GroupWrapper = styled.div``;
 const GroupHeader = styled.h2``;
 const IngredientWrapper = styled.div``;

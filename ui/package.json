@@ -23,14 +23,16 @@
     "recharts": "2.0.9",
     "styled-components": "5.2.1",
     "subscriptions-transport-ws": "0.9.18",
-    "tesseract.js": "2.1.4"
+    "tesseract.js": "2.1.4",
+    "typescript": "^4.2.4"
   },
   "scripts": {
     "start": "localproxy-react-scripts start",
-    "build": "localproxy-react-scripts build",
+    "build": "npm run generate-types && localproxy-react-scripts build",
     "test": "localproxy-react-scripts test",
     "eject": "localproxy-react-scripts eject",
-    "gen-fragments": "node ./gen-fragments.js"
+    "gen-fragments": "node ./gen-fragments.js",
+    "generate-types": "graphql-codegen --config codegen.yml"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -46,6 +48,13 @@
   "##homepage": "/meals/",
   "proxy": "https://localhost",
   "devDependencies": {
-    "@kj800x/localproxy-react-scripts": "0.3.0"
+    "@graphql-codegen/cli": "1.21.4",
+    "@graphql-codegen/typescript": "1.22.0",
+    "@graphql-codegen/typescript-operations": "1.17.16",
+    "@graphql-codegen/typescript-react-apollo": "2.2.4",
+    "@kj800x/localproxy-react-scripts": "0.3.0",
+    "@types/react": "^17.0.3",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/styled-components": "^5.1.9"
   }
 }

@@ -11,6 +11,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { HomePage } from "./pages/home/HomePage";
 import { RecipePage } from "./pages/recipe/RecipePage";
 import { ShoppingListPage } from "./pages/plan/shopping-list/ShoppingListPage";
+import { SearchPage } from "./pages/plan/search/SearchPage";
+import { MealsPage } from "./pages/plan/meals/MealsPage";
 
 function App() {
   return (
@@ -21,14 +23,14 @@ function App() {
             <HomePage />
           </Route>
           <Route path="/search/:id">
-            <HomePage />
+            <SearchPage />
           </Route>
-          <Route path="/meals/:id">
-            <HomePage />
+          <Route path="/plan/:id">
+            <MealsPage />
           </Route>
-          <Route path="/settings/:id">
+          {/* <Route path="/settings/:id">
             <HomePage />
-          </Route>
+          </Route> */}
           <Route path="/shopping-list/:id">
             <ShoppingListPage />
           </Route>

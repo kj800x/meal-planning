@@ -1,78 +1,18 @@
-import React from "react";
-import styled from "styled-components";
 import { Header } from "../../../library/Header";
 // import { MealPlan } from "../../home/MealPlan";
 import { useParams } from "react-router";
-import { useQuery, gql } from "@apollo/client";
 import { Loading } from "../../../library/Loading";
 import { ErrorDisplay } from "../../../library/ErrorDisplay";
 import { IngredientsList } from "./IngredientsList";
-
-const PLAN_WITH_INGREDIENTS = gql`
-  query($planId: Int!) {
-    mealPlan(id: $planId) {
-      id
-      breakfastSlots
-      lunchSlots
-      dinnerSlots
-      start
-      end
-      extraIngredients {
-        id
-        unit
-        quantity
-        ingredient {
-          id
-          name
-          image
-          groceryAisle {
-            name
-            ordering
-            id
-          }
-        }
-      }
-      meals {
-        id
-        type
-        servings
-        date
-        ingredients {
-          id
-          servings
-          ingredient {
-            id
-            name
-            image
-            groceryAisle {
-              name
-              ordering
-              id
-            }
-          }
-          quantity
-          unit
-        }
-        recipe {
-          title
-          image
-        }
-      }
-    }
-  }
-`;
-
-const Wrapper = styled.div`
-  max-width: 1600px;
-  margin: 12px auto;
-  background: lightblue;
-`;
+import { PageWrapper } from "../../../library/PageWrapper";
+import { Tabs } from "../Tabs";
+import { usePlanWithIngredientsQuery } from "../../../generated/graphql";
 
 export const ShoppingListPage = () => {
-  const { id } = useParams();
-  const { data, loading, error } = useQuery(PLAN_WITH_INGREDIENTS, {
+  const { id: planId } = useParams();
+  const { data, loading, error } = usePlanWithIngredientsQuery({
     variables: {
-      planId: parseInt(id, 10),
+      planId: parseInt(planId, 10),
     },
   });
 
@@ -87,10 +27,10 @@ export const ShoppingListPage = () => {
   return (
     <>
       <Header />
-      <Wrapper>
-        {/* <MealPlan id={id} /> */}
+      <PageWrapper>
+        <Tabs planId={parseInt(planId, 10)} />
         <IngredientsList plan={data.mealPlan} />
-      </Wrapper>
+      </PageWrapper>
     </>
   );
 };
