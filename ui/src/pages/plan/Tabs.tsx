@@ -23,10 +23,11 @@ const Tab = styled(NavLink)`
   border-radius: 8px;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
-  color: black;
+  color: blue;
+  font-weight: 600;
 
   &.active {
-    color: blue;
+    color: black;
   }
 `;
 

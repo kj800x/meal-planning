@@ -32,7 +32,10 @@ export const MealsPage = () => {
       <Header />
       <PageWrapper>
         <Tabs planId={planId} />
-        <RecipeResults recipes={plan.meals.map((meal) => meal.recipe)} />
+        <RecipeResults
+          recipes={plan.meals.map((meal) => meal.recipe)}
+          plan={plan}
+        />
       </PageWrapper>
     </>
   );

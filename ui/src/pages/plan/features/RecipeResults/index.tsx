@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useDrag } from "react-dnd";
 import { FC } from "react";
 import {
+  MealPlan,
   Recipe as RecipeType,
   useSearchRecipesQuery,
 } from "../../../../generated/graphql";
@@ -64,6 +65,17 @@ const ValidServingWrapper = styled.div<{ isDragging: boolean }>`
   }
 `;
 
+const PlannedWrapper = styled.div`
+  border: 1px solid black;
+  padding: 2px 4px;
+  margin: 8px 4px;
+  border-radius: 8px;
+  background: pink;
+  &:before {
+    content: "Planned:  ";
+  }
+`;
+
 const ValidServing: FC<{
   serving: number;
   recipe: RecipeType;
@@ -83,7 +95,14 @@ const ValidServing: FC<{
   );
 };
 
-const Recipe: FC<{ recipe: RecipeType }> = ({ recipe }) => {
+const Recipe: FC<{ recipe: RecipeType; plan: MealPlan }> = ({
+  recipe,
+  plan,
+}) => {
+  const quantityPlanned = plan.meals.filter(
+    (meal) => meal.recipe.id === recipe.id
+  ).length;
+
   return (
     <RecipeWrapper>
       <RecipeImage src={`/meals/assets/${recipe.image}`} />
@@ -91,6 +110,9 @@ const Recipe: FC<{ recipe: RecipeType }> = ({ recipe }) => {
         <RecipeTitle>{recipe.title}</RecipeTitle>
         <RecipeDescription>{recipe.description}</RecipeDescription>
         <Servings>
+          {quantityPlanned !== 0 && (
+            <PlannedWrapper>{quantityPlanned}</PlannedWrapper>
+          )}
           {recipe.validServings.map((serving) => (
             <ValidServing key={serving} serving={serving} recipe={recipe} />
           ))}
@@ -100,17 +122,38 @@ const Recipe: FC<{ recipe: RecipeType }> = ({ recipe }) => {
   );
 };
 
-export const RecipeResults: FC<{ recipes: RecipeType[] }> = ({ recipes }) => {
+function get<T, K extends keyof T>(key: K) {
+  return (subject: T) => subject[key];
+}
+
+function unique<U, T>(keyExtractor: (element: U) => T) {
+  return function (array: U[]) {
+    return array.filter(
+      (e, i, a) =>
+        i === a.findIndex((inner) => keyExtractor(inner) === keyExtractor(e))
+    );
+  };
+}
+
+const getRecipeKey = get<RecipeType, "id">("id");
+
+export const RecipeResults: FC<{ recipes: RecipeType[]; plan: MealPlan }> = ({
+  recipes,
+  plan,
+}) => {
   return (
     <Wrapper>
-      {recipes.map((recipe) => (
-        <Recipe key={recipe.id} recipe={recipe as RecipeType} />
+      {unique(getRecipeKey)(recipes).map((recipe) => (
+        <Recipe key={recipe.id} recipe={recipe as RecipeType} plan={plan} />
       ))}
     </Wrapper>
   );
 };
 
-export const RecipeSearchResults: FC<{ query: string }> = ({ query }) => {
+export const RecipeSearchResults: FC<{ query: string; plan: MealPlan }> = ({
+  query,
+  plan,
+}) => {
   const { data, loading, error } = useSearchRecipesQuery({
     variables: { query },
   });
@@ -124,6 +167,9 @@ export const RecipeSearchResults: FC<{ query: string }> = ({ query }) => {
   }
 
   return (
-    <RecipeResults recipes={data?.searchRecipes.recipes as RecipeType[]} />
+    <RecipeResults
+      recipes={data?.searchRecipes.recipes as RecipeType[]}
+      plan={plan}
+    />
   );
 };
