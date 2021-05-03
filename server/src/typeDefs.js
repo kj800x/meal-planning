@@ -12,7 +12,6 @@ export const typeDefs = gql`
     image: String
     recipes: [Recipe!]!
   }
-
   type Cuisine {
     id: Int!
     externalId: String
@@ -20,14 +19,12 @@ export const typeDefs = gql`
     image: String
     recipes: [Recipe!]!
   }
-
   type GroceryAisle {
     id: Int!
     name: String!
     ordering: Int!
     ingredients: [Ingredient!]!
   }
-
   type Ingredient {
     id: Int!
     externalId: String
@@ -35,7 +32,6 @@ export const typeDefs = gql`
     image: String
     groceryAisle: GroceryAisle
   }
-
   type NutritionFact {
     id: Int!
     recipe: Recipe!
@@ -43,7 +39,6 @@ export const typeDefs = gql`
     amount: Int!
     unit: String!
   }
-
   type Recipe {
     id: Int!
     cuisines: [Cuisine!]!
@@ -63,7 +58,6 @@ export const typeDefs = gql`
     url: String
     rating: Int
   }
-
   type RecipeStep {
     id: Int!
     recipe: Recipe!
@@ -71,14 +65,12 @@ export const typeDefs = gql`
     image: String
     instructions: String
   }
-
   type Utensil {
     id: Int!
     externalId: String
     name: String!
     recipes: [Recipe!]!
   }
-
   type Yield {
     id: Int!
     servings: Int!
@@ -87,7 +79,6 @@ export const typeDefs = gql`
     quantity: Float!
     unit: String!
   }
-
   type IngredientResultPage {
     recipes: [Ingredient!]!
     total: Int!
@@ -106,9 +97,8 @@ export const typeDefs = gql`
   }
   type ScheduledMeal {
     id: Int!
-    type: String!
+    completed: Boolean!
     servings: Int!
-    date: Date
     recipe: Recipe!
     mealPlan: MealPlan!
     ingredients: [Yield!]!
@@ -121,9 +111,21 @@ export const typeDefs = gql`
     start: Date!
     end: Date!
     extraIngredients: [ScheduledExtraIngredient!]!
+    acquiredIngredients: [AcquiredIngredient!]!
     meals: [ScheduledMeal!]!
   }
-
+  enum AcquisitionType {
+    HAVE
+    BOUGHT
+  }
+  type AcquiredIngredient {
+    type: AcquisitionType!
+    id: Int!
+    ingredient: Ingredient!
+    quantity: Float!
+    unit: String!
+    mealPlan: MealPlan!
+  }
   type Query {
     groceryAisles: [GroceryAisle!]!
     recipe(id: Int): Recipe
@@ -140,6 +142,7 @@ export const typeDefs = gql`
     mealPlans: [MealPlan!]!
     currentMealPlan: MealPlan
     mealPlan(id: Int!): MealPlan
+    planByDate(date: Date!): MealPlan
   }
 
   type Mutation {

@@ -14,6 +14,10 @@ const FETCH_LATEST_MEAL_PLAN = db
   .prepare("SELECT id FROM MealPlan ORDER BY end DESC LIMIT 1")
   .pluck();
 
+const FETCH_PLAN_BY_DATE = db
+  .prepare("SELECT id FROM MealPlan WHERE start <= ? AND ? <= end LIMIT 1")
+  .pluck();
+
 export const Query = {
   resolver: {
     groceryAisles: (_parent, _args, context, _info) => {
@@ -56,6 +60,14 @@ export const Query = {
     },
 
     mealPlan: (_parent, { id }, context, _info) => {
+      return context.dataLoaders.MealPlan.load(id);
+    },
+
+    planByDate: (_parent, { date }, context, _info) => {
+      const id = FETCH_PLAN_BY_DATE.get(date, date);
+      if (!id) {
+        return null;
+      }
       return context.dataLoaders.MealPlan.load(id);
     },
   },

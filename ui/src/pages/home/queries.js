@@ -18,7 +18,6 @@ export const PLANS = gql`
       }
       meals {
         id
-        type
         servings
         recipe {
           title
@@ -51,7 +50,6 @@ export const CREATE_PLAN = gql`
       }
       meals {
         id
-        type
         servings
         recipe {
           title

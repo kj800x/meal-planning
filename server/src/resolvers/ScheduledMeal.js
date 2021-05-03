@@ -12,9 +12,7 @@ const FETCH_INGREDIENTS = db
 export const ScheduledMeal = {
   resolver: {
     id: get("id"),
-    type: get("type"),
     servings: get("servings"),
-    date: get("date"),
 
     recipe: ({ recipeId }, _, context) => {
       return context.dataLoaders.Recipe.load(recipeId);
