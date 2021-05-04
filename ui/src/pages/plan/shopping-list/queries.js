@@ -26,9 +26,7 @@ export const PLAN_WITH_INGREDIENTS = gql`
       }
       meals {
         id
-        type
         servings
-        date
         ingredients {
           id
           servings

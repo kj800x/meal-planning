@@ -26,7 +26,6 @@ export const PLANS = gql`
           id
           image
         }
-        date
       }
     }
   }
@@ -55,7 +54,6 @@ export const CREATE_PLAN = gql`
           title
           image
         }
-        date
       }
     }
   }
