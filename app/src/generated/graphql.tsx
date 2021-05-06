@@ -254,6 +254,30 @@ export type Yield = {
   unit: Scalars['String'];
 };
 
+export type CookbookRecipesQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type CookbookRecipesQuery = (
+  { __typename?: 'Query' }
+  & { searchRecipes: (
+    { __typename?: 'RecipeSearchResultPage' }
+    & Pick<RecipeSearchResultPage, 'total'>
+    & { recipes: Array<(
+      { __typename?: 'Recipe' }
+      & Pick<Recipe, 'id' | 'validServings' | 'title' | 'time' | 'image' | 'description' | 'url' | 'rating'>
+      & { cuisines: Array<(
+        { __typename?: 'Cuisine' }
+        & Pick<Cuisine, 'id' | 'name'>
+      )>, allergens: Array<(
+        { __typename?: 'Allergen' }
+        & Pick<Allergen, 'id' | 'name'>
+      )> }
+    )> }
+  ) }
+);
+
 export type PlanByDateQueryVariables = Exact<{
   date: Scalars['Date'];
 }>;
@@ -298,6 +322,59 @@ export type PlanByDateQuery = (
 );
 
 
+export const CookbookRecipesDocument = gql`
+    query cookbookRecipes($query: String!) {
+  searchRecipes(query: $query) {
+    total
+    recipes {
+      id
+      cuisines {
+        id
+        name
+      }
+      allergens {
+        id
+        name
+      }
+      validServings
+      title
+      time
+      image
+      description
+      url
+      rating
+    }
+  }
+}
+    `;
+
+/**
+ * __useCookbookRecipesQuery__
+ *
+ * To run a query within a React component, call `useCookbookRecipesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCookbookRecipesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCookbookRecipesQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useCookbookRecipesQuery(baseOptions: Apollo.QueryHookOptions<CookbookRecipesQuery, CookbookRecipesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CookbookRecipesQuery, CookbookRecipesQueryVariables>(CookbookRecipesDocument, options);
+      }
+export function useCookbookRecipesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CookbookRecipesQuery, CookbookRecipesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CookbookRecipesQuery, CookbookRecipesQueryVariables>(CookbookRecipesDocument, options);
+        }
+export type CookbookRecipesQueryHookResult = ReturnType<typeof useCookbookRecipesQuery>;
+export type CookbookRecipesLazyQueryHookResult = ReturnType<typeof useCookbookRecipesLazyQuery>;
+export type CookbookRecipesQueryResult = Apollo.QueryResult<CookbookRecipesQuery, CookbookRecipesQueryVariables>;
 export const PlanByDateDocument = gql`
     query planByDate($date: Date!) {
   planByDate(date: $date) {

@@ -3,20 +3,33 @@ import React from 'react';
 import { AppRegistry } from 'react-native';
 import { name as appName } from './src/app.json';
 import { MealsScreen } from './src/screens/meals/MealsScreen';
+import { CookbookScreen } from './src/screens/cookbook/CookbookScreen';
 import { ShoppingScreen } from './src/screens/shopping';
 import { SettingsScreen } from './src/screens/settings/SettingsScreen';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCog, faList, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { NavigationContainer } from '@react-navigation/native';
 
-const BottomTabs = createMaterialBottomTabNavigator();
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'http://10.60.1.3/meals/graphql',
+  uri: 'https://meals.coolkev.com/meals/graphql',
   cache: new InMemoryCache(),
 });
+
+const MealsStack = createStackNavigator();
+const BottomTabs = createMaterialBottomTabNavigator();
+
+const MealsStackScreen = () => {
+  return (
+    <MealsStack.Navigator>
+      <MealsStack.Screen name="MealsHome" component={MealsScreen} options={{ header: () => null }} />
+      <MealsStack.Screen name="Cookbook" component={CookbookScreen} />
+    </MealsStack.Navigator>
+  );
+};
 
 export default function App() {
   return (
@@ -25,7 +38,7 @@ export default function App() {
         <BottomTabs.Navigator initialRouteName="Meals">
           <BottomTabs.Screen
             name="Meals"
-            component={MealsScreen}
+            component={MealsStackScreen}
             options={{
               title: 'Meals',
               tabBarIcon: ({ color }) => <FontAwesomeIcon color={color} size={24} icon={faUtensils} />,

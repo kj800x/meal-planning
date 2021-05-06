@@ -6,6 +6,7 @@ import { ErrorDisplay } from '../../library/ErrorDisplay';
 import { Loading } from '../../library/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/core';
 
 const RootView = styled.View`
   flex: 1;
@@ -76,9 +77,15 @@ const CookbookButtonText = styled.Text`
   margin-left: 12px;
 `;
 const CookbookButton = () => {
+  const navigator = useNavigation();
+
   return (
     <CookbookWrapper>
-      <CookbookButtonButton>
+      <CookbookButtonButton
+        onPress={() => {
+          navigator.navigate('Cookbook');
+        }}
+      >
         <FontAwesomeIcon size={24} icon={faBookOpen} />
         <CookbookButtonText>Cookbook</CookbookButtonText>
       </CookbookButtonButton>
@@ -86,24 +93,24 @@ const CookbookButton = () => {
   );
 };
 
-const AddAMealButtonButton = styled.TouchableOpacity`
-  margin: 2px 8px 8px;
-  padding: 8px;
-  border: 2px solid green
-  border-radius: 80px;
-`;
-const AddAMealButtonText = styled.Text`
-  font-size: 20px;
-  text-align: center;
-`;
+// const AddAMealButtonButton = styled.TouchableOpacity`
+//   margin: 2px 8px 8px;
+//   padding: 8px;
+//   border: 2px solid green
+//   border-radius: 80px;
+// `;
+// const AddAMealButtonText = styled.Text`
+//   font-size: 20px;
+//   text-align: center;
+// `;
 
-const AddAMealButton = () => {
-  return (
-    <AddAMealButtonButton>
-      <AddAMealButtonText>Add a meal</AddAMealButtonText>
-    </AddAMealButtonButton>
-  );
-};
+// const AddAMealButton = () => {
+//   return (
+//     <AddAMealButtonButton>
+//       <AddAMealButtonText>Add a meal</AddAMealButtonText>
+//     </AddAMealButtonButton>
+//   );
+// };
 
 const MealsList = ({ plan }: { plan: MealPlan }) => {
   return (
@@ -116,7 +123,7 @@ const MealsList = ({ plan }: { plan: MealPlan }) => {
       {plan.meals.map(meal => (
         <MealPreview meal={meal} key={meal.id} completed={true} />
       ))}
-      <AddAMealButton />
+      {/* <AddAMealButton /> */}
       <CookbookButton />
     </RootScrollView>
   );
@@ -124,7 +131,7 @@ const MealsList = ({ plan }: { plan: MealPlan }) => {
 
 const ZeroStateWrapper = styled.View`
   align-items: center;
-  margin-top: 20px;
+  margin: 20px 0;
 `;
 const ZeroStateText = styled.Text`
   font-size: 20px;
@@ -133,7 +140,7 @@ const ZeroStateText = styled.Text`
 const ZeroState = () => {
   return (
     <ZeroStateWrapper>
-      <ZeroStateText>No meals planned for that date</ZeroStateText>
+      <ZeroStateText>No meals planned for these dates</ZeroStateText>
     </ZeroStateWrapper>
   );
 };
@@ -162,7 +169,7 @@ export const MealsScreen = () => {
       <RootView>
         <DateHeader start={1000 * 60 * 60 * 24 * 2} end={1000 * 60 * 60 * 24 * 7} onReselect={() => {}} />
         <ZeroState />
-        <AddAMealButton />
+        {/* <AddAMealButton /> */}
         <CookbookButton />
       </RootView>
     );
