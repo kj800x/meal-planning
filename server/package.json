@@ -5,6 +5,7 @@
     "@kj800x/localproxy-client": "0.3.0",
     "apollo-server-express": "^2.15.0",
     "better-sqlite3": "^7.0.1",
+    "chalk": "4.1.1",
     "dataloader": "^2.0.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
