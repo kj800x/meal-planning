@@ -10,6 +10,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { HomePage } from "./pages/home/HomePage";
 import { RecipePage } from "./pages/recipe/RecipePage";
+import { RecipesPage } from "./pages/recipes/RecipesPage";
 import { ShoppingListPage } from "./pages/plan/shopping-list/ShoppingListPage";
 import { SearchPage } from "./pages/plan/search/SearchPage";
 import { MealsPage } from "./pages/plan/meals/MealsPage";
@@ -20,6 +21,15 @@ function App() {
       <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route path="/recipes">
+            <RecipesPage />
+          </Route>
+          <Route path="/settings">
+            <HomePage />
+          </Route>
+          <Route path="/favorites">
             <HomePage />
           </Route>
           <Route path="/search/:id">

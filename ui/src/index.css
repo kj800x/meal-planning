@@ -1,8 +1,35 @@
 body {
+  --NAV_DISABLED: var(--FLINT);
+  --NAV_ACTIVE: var(--PRIMARY);
+  --LOGO: var(--SECONDARY);
+
+  /* --PRIMARY: #fb9400;
+  --SECONDARY: #7b60ed;
+  --TERTIARY: #00a751; */
+
+  --PRIMARY: #f07752;
+  --SECONDARY: #7b60ed;
+  --TERTIARY: #fb9400;
+
+  --OLAF: #ffffff;
+  --GYPSUM: #f5f8fa;
+  --KOALA: #eaf0f6;
+  --GREAT_WHITE: #dfe3eb;
+  --BATTLESHIP: #cbd6e2;
+  --FLINT: #99acc2;
+  --EERIE: #7c98b6;
+  --SLINKY: #516f90;
+  --HEFFALUMP: #4783c2;
+  --PANTERA: #2d3e50;
+
+  --OBSIDIAN: #33475b;
+
   margin: 0;
   padding: 0;
-  background: #303031;
+  background: var(--OLAF);
   font-family: "Lato", Helvetica, Arial, sans-serif;
+
+  color: var(--OBSIDIAN);
 }
 
 #root {
