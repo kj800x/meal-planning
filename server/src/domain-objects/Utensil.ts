@@ -1,25 +1,29 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import {
+  fetchRecipeIdsByUtensil,
+  RecipeDataObject,
+} from "../data-objects/Recipe";
+import { LOADER, UtensilDataObject } from "../data-objects/Utensil";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const UTENSIL_LOADER = db.prepareIn("SELECT * FROM Utensil WHERE id IN (!?!)");
-const FETCH_RECIPES = db
-  .prepare("SELECT recipeId FROM UtensilMap WHERE utensilId = ?")
-  .pluck();
+interface UtensilGQLType {
+  id: number;
+  externalId?: string;
+  name: string;
+  recipes: (RecipeDataObject | Error)[];
+}
 
-export const Utensil = {
+export const Utensil: DomainObject<UtensilGQLType, UtensilDataObject> = {
   resolver: {
     id: get("id"),
     externalId: get("externalId"),
     name: get("name"),
 
     recipes: ({ id }, _, context) => {
-      const results = FETCH_RECIPES.all(id);
-      return context.dataLoaders.Recipe.loadMany(results);
+      const results = fetchRecipeIdsByUtensil(id);
+      return context.loaders.Recipe.loadMany(results);
     },
   },
-  loader: async (ids) => {
-    const result = UTENSIL_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

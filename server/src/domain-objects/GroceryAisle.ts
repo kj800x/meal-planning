@@ -1,25 +1,31 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { GroceryAisleDataObject, LOADER } from "../data-objects/GroceryAisle";
+import {
+  fetchIngredientIdsByAisleId,
+  IngredientDataObject,
+} from "../data-objects/Ingredient";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
+import { get } from "../util/get";
 
-const GROCERY_AISLE_LOADER = db.prepareIn(
-  "SELECT * FROM GroceryAisle WHERE id IN (!?!)"
-);
-const FETCH_INGREDIENTS = db
-  .prepare("SELECT id FROM Ingredient WHERE groceryAisleId = ?")
-  .pluck();
+export interface GroceryAisleGQLType {
+  id: number;
+  name: string;
+  ordering: number;
+  ingredients: (IngredientDataObject | Error)[];
+}
 
-export const GroceryAisle = {
+export const GroceryAisle: DomainObject<
+  GroceryAisleGQLType,
+  GroceryAisleDataObject
+> = {
   resolver: {
     id: get("id"),
+    name: get("name"),
     ordering: get("ordering"),
     ingredients: ({ id }, _, context) => {
-      const recipeIds = FETCH_INGREDIENTS.all(id);
-      return context.dataLoaders.Recipe.loadMany(recipeIds);
+      const ids = fetchIngredientIdsByAisleId(id);
+      return context.loaders.Ingredient.loadMany(ids);
     },
   },
-  loader: async (ids) => {
-    const result = GROCERY_AISLE_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

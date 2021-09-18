@@ -1,25 +1,30 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { CuisineDataObject, LOADER } from "../data-objects/Cuisine";
+import {
+  fetchRecipeIdsByCuisine,
+  RecipeDataObject,
+} from "../data-objects/Recipe";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
+import { get } from "../util/get";
 
-const CUISINE_LOADER = db.prepareIn("SELECT * FROM Cuisine WHERE id IN (!?!)");
-const FETCH_RECIPES = db
-  .prepare("SELECT recipeId FROM CuisineMap WHERE cuisineId = ?")
-  .pluck();
+export interface CuisineGQLType {
+  id: number;
+  externalId?: string;
+  name: string;
+  image?: string;
+  recipes: (RecipeDataObject | Error)[];
+}
 
-export const Cuisine = {
+export const Cuisine: DomainObject<CuisineGQLType, CuisineDataObject> = {
   resolver: {
     id: get("id"),
     externalId: get("externalId"),
     name: get("name"),
     image: get("image"),
     recipes: ({ id }, _, context) => {
-      const recipeIds = FETCH_RECIPES.all(id);
-      return context.dataLoaders.Recipe.loadMany(recipeIds);
+      const recipeIds = fetchRecipeIdsByCuisine(id);
+      return context.loaders.Recipe.loadMany(recipeIds);
     },
   },
-  loader: async (ids) => {
-    const result = CUISINE_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

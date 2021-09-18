@@ -1,10 +1,20 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { IngredientDataObject } from "../data-objects/Ingredient";
+import { RecipeDataObject } from "../data-objects/Recipe";
+import { LOADER, YieldDataObject } from "../data-objects/Yield";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const YIELD_LOADER = db.prepareIn("SELECT * FROM Yield WHERE id IN (!?!)");
+interface YieldGQLType {
+  id: number;
+  servings: number;
+  quantity: number;
+  unit: string;
+  recipe: RecipeDataObject;
+  ingredient: IngredientDataObject;
+}
 
-export const Yield = {
+export const Yield: DomainObject<YieldGQLType, YieldDataObject> = {
   resolver: {
     id: get("id"),
     servings: get("servings"),
@@ -12,14 +22,11 @@ export const Yield = {
     unit: get("unit"),
 
     recipe: ({ recipeId }, _, context) => {
-      return context.dataLoaders.Recipe.load(recipeId);
+      return context.loaders.Recipe.load(recipeId);
     },
     ingredient: ({ ingredientId }, _, context) => {
-      return context.dataLoaders.Ingredient.load(ingredientId);
+      return context.loaders.Ingredient.load(ingredientId);
     },
   },
-  loader: async (ids) => {
-    const result = YIELD_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

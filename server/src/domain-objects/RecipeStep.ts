@@ -1,24 +1,28 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { RecipeDataObject } from "../data-objects/Recipe";
+import { LOADER, RecipeStepDataObject } from "../data-objects/RecipeStep";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const RECIPE_STEP_LOADER = db.prepareIn(
-  "SELECT * FROM RecipeStep WHERE id IN (!?!)"
-);
+interface RecipeStepGQLType {
+  id: number;
+  ordering: number;
+  image?: string;
+  instructions: string;
+  recipe: RecipeDataObject;
+}
 
-export const RecipeStep = {
-  resolver: {
-    id: get("id"),
-    ordering: get("ordering"),
-    image: get("image"),
-    instructions: get("instructions"),
+export const RecipeStep: DomainObject<RecipeStepGQLType, RecipeStepDataObject> =
+  {
+    resolver: {
+      id: get("id"),
+      ordering: get("ordering"),
+      image: get("image"),
+      instructions: get("instructions"),
 
-    recipe: ({ recipeId }, _, context) => {
-      return context.dataLoaders.Recipe.load(recipeId);
+      recipe: ({ recipeId }, _, context) => {
+        return context.loaders.Recipe.load(recipeId);
+      },
     },
-  },
-  loader: async (ids) => {
-    const result = RECIPE_STEP_LOADER.all(ids);
-    return order(result, ids);
-  },
-};
+    loader: makeDomainObjectLoader(LOADER),
+  };

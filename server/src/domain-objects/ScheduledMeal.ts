@@ -1,32 +1,40 @@
-import { db } from "../db";
+import { MealPlanDataObject } from "../data-objects/MealPlan";
+import { RecipeDataObject } from "../data-objects/Recipe";
+import { LOADER, ScheduledMealDataObject } from "../data-objects/ScheduledMeal";
+import {
+  fetchByRecipeAndServings,
+  YieldDataObject,
+} from "../data-objects/Yield";
 import { get } from "../util/get";
-import { order } from "../util/loaderOrderer";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const MEAL_LOADER = db.prepareIn(
-  "SELECT * FROM ScheduledMeal WHERE id IN (!?!)"
-);
-const FETCH_INGREDIENTS = db
-  .prepare("SELECT id FROM Yield WHERE recipeId = ? AND servings = ?")
-  .pluck();
+interface ScheduledMealGQLType {
+  id: number;
+  servings: number;
+  recipe: RecipeDataObject;
+  ingredients: (YieldDataObject | Error)[];
+  mealPlan: MealPlanDataObject;
+}
 
-export const ScheduledMeal = {
+export const ScheduledMeal: DomainObject<
+  ScheduledMealGQLType,
+  ScheduledMealDataObject
+> = {
   resolver: {
     id: get("id"),
     servings: get("servings"),
 
     recipe: ({ recipeId }, _, context) => {
-      return context.dataLoaders.Recipe.load(recipeId);
+      return context.loaders.Recipe.load(recipeId);
     },
     mealPlan: ({ mealPlanId }, _, context) => {
-      return context.dataLoaders.MealPlan.load(mealPlanId);
+      return context.loaders.MealPlan.load(mealPlanId);
     },
     ingredients: ({ recipeId, servings }, _, context) => {
-      const yieldIds = FETCH_INGREDIENTS.all(recipeId, servings);
-      return context.dataLoaders.Yield.loadMany(yieldIds);
+      const yieldIds = fetchByRecipeAndServings(recipeId, servings);
+      return context.loaders.Yield.loadMany(yieldIds);
     },
   },
-  loader: async (ids) => {
-    const result = MEAL_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

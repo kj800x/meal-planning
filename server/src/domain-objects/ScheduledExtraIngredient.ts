@@ -1,26 +1,36 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { IngredientDataObject } from "../data-objects/Ingredient";
+import { MealPlanDataObject } from "../data-objects/MealPlan";
+import {
+  LOADER,
+  ScheduledExtraIngredientDataObject,
+} from "../data-objects/ScheduledExtraIngredient";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const EXTRA_INGREDIENT_LOADER = db.prepareIn(
-  "SELECT * FROM ScheduledExtraIngredient WHERE id IN (!?!)"
-);
+interface ScheduledExtraIngredientGQLType {
+  id: number;
+  quantity: number;
+  unit: string;
+  ingredient: IngredientDataObject;
+  mealPlan: MealPlanDataObject;
+}
 
-export const ScheduledExtraIngredient = {
+export const ScheduledExtraIngredient: DomainObject<
+  ScheduledExtraIngredientGQLType,
+  ScheduledExtraIngredientDataObject
+> = {
   resolver: {
     id: get("id"),
     quantity: get("quantity"),
     unit: get("unit"),
 
     ingredient: ({ ingredientId }, _, context) => {
-      return context.dataLoaders.Ingredient.load(ingredientId);
+      return context.loaders.Ingredient.load(ingredientId);
     },
     mealPlan: ({ mealPlanId }, _, context) => {
-      return context.dataLoaders.MealPlan.load(mealPlanId);
+      return context.loaders.MealPlan.load(mealPlanId);
     },
   },
-  loader: async (ids) => {
-    const result = EXTRA_INGREDIENT_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

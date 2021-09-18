@@ -3,7 +3,7 @@ import betterSqlite3 from "better-sqlite3";
 import mkdirp from "mkdirp";
 import fs from "fs";
 
-export const migration = (dataDir) => {
+export const migration = (dataDir: string) => {
   mkdirp.sync(path.resolve(dataDir));
 
   // Create the DB

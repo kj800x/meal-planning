@@ -1,23 +1,29 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { LOADER, NutritionFactDataObject } from "../data-objects/NutritionFact";
+import { RecipeDataObject } from "../data-objects/Recipe";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const NUTRITION_FACT_LOADER = db.prepareIn(
-  "SELECT * FROM NutritionFact WHERE id IN (!?!)"
-);
+interface NutritionFactGQLType {
+  id: number;
+  name: string;
+  amount: number;
+  unit: string;
+  recipe: RecipeDataObject;
+}
 
-export const NutritionFact = {
+export const NutritionFact: DomainObject<
+  NutritionFactGQLType,
+  NutritionFactDataObject
+> = {
   resolver: {
     id: get("id"),
     name: get("name"),
     amount: get("amount"),
     unit: get("unit"),
     recipe: ({ recipeId }, _, context) => {
-      return context.dataLoaders.Recipe.load(recipeId);
+      return context.loaders.Recipe.load(recipeId);
     },
   },
-  loader: async (ids) => {
-    const result = NUTRITION_FACT_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

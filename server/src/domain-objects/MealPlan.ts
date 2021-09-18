@@ -1,18 +1,28 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { LOADER, MealPlanDataObject } from "../data-objects/MealPlan";
+import {
+  fetchExtraIngredientIdsByMealPlanId,
+  ScheduledExtraIngredientDataObject,
+} from "../data-objects/ScheduledExtraIngredient";
+import {
+  fetchMealIdsByMealPlanId,
+  ScheduledMealDataObject,
+} from "../data-objects/ScheduledMeal";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
 
-const MEAL_PLAN_LOADER = db.prepareIn(
-  "SELECT * FROM MealPlan WHERE id IN (!?!)"
-);
-const FETCH_EXTRA_INGREDIENTS = db
-  .prepare("SELECT id FROM ScheduledExtraIngredient WHERE mealPlanId = ?")
-  .pluck();
-const FETCH_MEALS = db
-  .prepare("SELECT id FROM ScheduledMeal WHERE mealPlanId = ?")
-  .pluck();
+export interface MealPlanGQLType {
+  id: number;
+  breakfastSlots: number;
+  lunchSlots: number;
+  dinnerSlots: number;
+  start: number;
+  end: number;
+  extraIngredients: (ScheduledExtraIngredientDataObject | Error)[];
+  meals: (ScheduledMealDataObject | Error)[];
+}
 
-export const MealPlan = {
+export const MealPlan: DomainObject<MealPlanGQLType, MealPlanDataObject> = {
   resolver: {
     id: get("id"),
     breakfastSlots: get("breakfastSlots"),
@@ -22,16 +32,13 @@ export const MealPlan = {
     end: get("end"),
 
     extraIngredients: ({ id }, _, context) => {
-      const ids = FETCH_EXTRA_INGREDIENTS.all(id);
-      return context.dataLoaders.ScheduledExtraIngredient.loadMany(ids);
+      const ids = fetchExtraIngredientIdsByMealPlanId(id);
+      return context.loaders.ScheduledExtraIngredient.loadMany(ids);
     },
     meals: ({ id }, _, context) => {
-      const ids = FETCH_MEALS.all(id);
-      return context.dataLoaders.ScheduledMeal.loadMany(ids);
+      const ids = fetchMealIdsByMealPlanId(id);
+      return context.loaders.ScheduledMeal.loadMany(ids);
     },
   },
-  loader: async (ids) => {
-    const result = MEAL_PLAN_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

@@ -1,31 +1,54 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { get } from "../util/get";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
+import {
+  AllergenDataObject,
+  fetchAllergenIdsByRecipeId,
+} from "../data-objects/Allergen";
+import {
+  CuisineDataObject,
+  fetchCuisineIdsByRecipeId,
+} from "../data-objects/Cuisine";
+import {
+  fetchNutritionFactIdsByRecipeId,
+  NutritionFactDataObject,
+} from "../data-objects/NutritionFact";
+import { LOADER, RecipeDataObject } from "../data-objects/Recipe";
+import {
+  fetchStepIdsByRecipeId,
+  RecipeStepDataObject,
+} from "../data-objects/RecipeStep";
+import {
+  fetchUtensilIdsByRecipeId,
+  UtensilDataObject,
+} from "../data-objects/Utensil";
+import {
+  fetchByRecipeAndServings,
+  fetchValidServingsByRecipeId,
+  YieldDataObject,
+} from "../data-objects/Yield";
 
-const RECIPE_LOADER = db.prepareIn("SELECT * FROM Recipe WHERE id IN (!?!)");
-const FETCH_CUISINES = db
-  .prepare("SELECT cuisineId FROM CuisineMap WHERE recipeId = ?")
-  .pluck();
-const FETCH_ALLERGENS = db
-  .prepare("SELECT allergenId FROM AllergenMap WHERE recipeId = ?")
-  .pluck();
-const FETCH_NUTRITION_FACTS = db
-  .prepare("SELECT id FROM NutritionFact WHERE recipeId = ?")
-  .pluck();
-const FETCH_UTENSILS = db
-  .prepare("SELECT utensilId FROM UtensilMap WHERE recipeId = ?")
-  .pluck();
-const FETCH_STEPS = db
-  .prepare("SELECT id FROM RecipeStep WHERE recipeId = ? ORDER BY ordering ASC")
-  .pluck();
-const FETCH_INGREDIENTS = db
-  .prepare("SELECT id FROM Yield WHERE recipeId = ? AND servings = ?")
-  .pluck();
-const FETCH_VALID_SERVINGS = db
-  .prepare("SELECT DISTINCT servings FROM Yield WHERE recipeId = ?")
-  .pluck();
+interface RecipeGQLType {
+  id: number;
+  source: string;
+  title: string;
+  time?: string;
+  image?: string;
+  description?: string;
+  pdf?: string;
+  url?: string;
+  rating?: number;
 
-export const Recipe = {
+  cuisines: (CuisineDataObject | Error)[];
+  allergens: (AllergenDataObject | Error)[];
+  nutritionFacts: (NutritionFactDataObject | Error)[];
+  utensils: (UtensilDataObject | Error)[];
+  steps: (RecipeStepDataObject | Error)[];
+  ingredients: (YieldDataObject | Error)[];
+  validServings: number[];
+}
+
+export const Recipe: DomainObject<RecipeGQLType, RecipeDataObject> = {
   resolver: {
     id: get("id"),
     source: get("source"),
@@ -38,35 +61,32 @@ export const Recipe = {
     rating: get("rating"),
 
     cuisines: ({ id }, _, context) => {
-      const results = FETCH_CUISINES.all(id);
-      return context.dataLoaders.Cuisine.loadMany(results);
+      const results = fetchCuisineIdsByRecipeId(id);
+      return context.loaders.Cuisine.loadMany(results);
     },
     allergens: ({ id }, _, context) => {
-      const results = FETCH_ALLERGENS.all(id);
-      return context.dataLoaders.Allergen.loadMany(results);
+      const results = fetchAllergenIdsByRecipeId(id);
+      return context.loaders.Allergen.loadMany(results);
     },
     nutritionFacts: ({ id }, _, context) => {
-      const results = FETCH_NUTRITION_FACTS.all(id);
-      return context.dataLoaders.NutritionFact.loadMany(results);
+      const results = fetchNutritionFactIdsByRecipeId(id);
+      return context.loaders.NutritionFact.loadMany(results);
     },
     utensils: ({ id }, _, context) => {
-      const results = FETCH_UTENSILS.all(id);
-      return context.dataLoaders.Utensil.loadMany(results);
+      const results = fetchUtensilIdsByRecipeId(id);
+      return context.loaders.Utensil.loadMany(results);
     },
     steps: ({ id }, _, context) => {
-      const results = FETCH_STEPS.all(id);
-      return context.dataLoaders.RecipeStep.loadMany(results);
+      const results = fetchStepIdsByRecipeId(id);
+      return context.loaders.RecipeStep.loadMany(results);
     },
     ingredients: ({ id }, { servings }, context) => {
-      const results = FETCH_INGREDIENTS.all(id, servings);
-      return context.dataLoaders.Yield.loadMany(results);
+      const results = fetchByRecipeAndServings(id, servings);
+      return context.loaders.Yield.loadMany(results);
     },
     validServings: ({ id }) => {
-      return FETCH_VALID_SERVINGS.all(id);
+      return fetchValidServingsByRecipeId(id);
     },
   },
-  loader: async (ids) => {
-    const result = RECIPE_LOADER.all(ids);
-    return order(result, ids);
-  },
+  loader: makeDomainObjectLoader(LOADER),
 };

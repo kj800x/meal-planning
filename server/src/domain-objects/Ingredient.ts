@@ -1,26 +1,30 @@
-import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { IngredientDataObject, LOADER } from "../data-objects/Ingredient";
+import { makeDomainObjectLoader } from "../util/makeDomainObjectLoader";
+import { DomainObject } from "./types";
+import { get } from "../util/get";
+import { GroceryAisleDataObject } from "../data-objects/GroceryAisle";
 
-const INGREDIENT_LOADER = db.prepareIn(
-  "SELECT * FROM Ingredient WHERE id IN (!?!)"
-);
+export interface IngredientGQLType {
+  id: number;
+  externalId?: string;
+  name: string;
+  image?: string;
+  groceryAisle: Promise<GroceryAisleDataObject> | null;
+}
 
-export const Ingredient = {
-  resolver: {
-    id: get("id"),
-    externalId: get("externalId"),
-    name: get("name"),
-    image: get("image"),
-    groceryAisle: ({ groceryAisleId }, _, context) => {
-      if (!groceryAisleId) {
-        return null;
-      }
-      return context.dataLoaders.GroceryAisle.load(groceryAisleId);
+export const Ingredient: DomainObject<IngredientGQLType, IngredientDataObject> =
+  {
+    resolver: {
+      id: get("id"),
+      externalId: get("externalId"),
+      name: get("name"),
+      image: get("image"),
+      groceryAisle: ({ groceryAisleId }, _, context) => {
+        if (!groceryAisleId) {
+          return null;
+        }
+        return context.loaders.GroceryAisle.load(groceryAisleId);
+      },
     },
-  },
-  loader: async (ids) => {
-    const result = INGREDIENT_LOADER.all(ids);
-    return order(result, ids);
-  },
-};
+    loader: makeDomainObjectLoader(LOADER),
+  };

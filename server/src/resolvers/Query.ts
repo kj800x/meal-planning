@@ -1,9 +1,9 @@
 import { db } from "../db";
 import { NoLoaderDomainObject } from "../domain-objects/types";
-import { GroceryAisleLoaderType } from "../domain-objects/GroceryAisle";
-import { RecipeLoaderType } from "../domain-objects/Recipe";
-import { IngredientLoaderType } from "../domain-objects/Ingredient";
-import { MealPlanLoaderType } from "../domain-objects/MealPlan";
+import { GroceryAisleDataObject } from "../data-objects/GroceryAisle";
+import { RecipeDataObject } from "../data-objects/Recipe";
+import { IngredientDataObject } from "../data-objects/Ingredient";
+import { MealPlanDataObject } from "../data-objects/MealPlan";
 
 const FETCH_ALL_GROCERY_AISLES = db
   .prepare("SELECT id FROM GroceryAisle ORDER BY ordering ASC")
@@ -22,66 +22,77 @@ const FETCH_PLAN_BY_DATE = db
   .pluck();
 
 type QueryType = {
-  groceryAisles: (GroceryAisleLoaderType | Error)[];
-  recipe: RecipeLoaderType;
+  groceryAisles: (GroceryAisleDataObject | Error)[];
+  recipe: RecipeDataObject;
   searchIngredients: {
-    ingredients: Promise<(IngredientLoaderType | Error)[]>;
+    ingredients: Promise<(IngredientDataObject | Error)[]>;
     total: number;
   };
   searchRecipes: {
-    recipes: Promise<(RecipeLoaderType | Error)[]>;
+    recipes: Promise<(RecipeDataObject | Error)[]>;
     total: number;
   };
-  mealPlans: (MealPlanLoaderType | Error)[];
-  currentMealPlan: MealPlanLoaderType;
-  planByDate: MealPlanLoaderType;
+  mealPlans: (MealPlanDataObject | Error)[];
+  mealPlan: MealPlanDataObject;
+  currentMealPlan: MealPlanDataObject;
+  planByDate: Promise<MealPlanDataObject> | null;
 };
+
+interface SearchArgs {
+  query: string;
+  offset: number;
+  limit: number;
+}
 
 export const Query: NoLoaderDomainObject<QueryType, null> = {
   resolver: {
-    groceryAisles: (_parent, _args, context, _info) => {
+    groceryAisles: (
+      _parent,
+      _args,
+      context
+    ): Promise<(GroceryAisleDataObject | Error)[]> => {
       const aisles = FETCH_ALL_GROCERY_AISLES.all();
-      return context.dataLoaders.GroceryAisle.loadMany(aisles);
+      return context.loaders.GroceryAisle.loadMany(aisles);
     },
 
-    recipe: (_parent, { id }, context, _info) => {
-      return context.dataLoaders.Recipe.load(id);
+    recipe: (_parent, { id }: { id: number }, context) => {
+      return context.loaders.Recipe.load(id);
     },
 
-    searchIngredients: (_parent, { query, limit, offset }, context, _info) => {
+    searchIngredients: (_parent, _searchArgs: SearchArgs, _context) => {
       return {
-        ingredients: [],
+        ingredients: Promise.resolve([]),
         total: 0,
       };
     },
 
-    searchRecipes: (_parent, { query, limit, offset }, context, _info) => {
+    searchRecipes: (_parent, _searchArgs: SearchArgs, _context) => {
       return {
-        recipes: [],
+        recipes: Promise.resolve([]),
         total: 0,
       };
     },
 
-    mealPlans: (_parent, _args, context, _info) => {
+    mealPlans: (_parent, _args, context) => {
       const ids = FETCH_ALL_MEAL_PLANS.all();
-      return context.dataLoaders.MealPlan.loadMany(ids);
+      return context.loaders.MealPlan.loadMany(ids);
     },
 
-    currentMealPlan: (_parent, _args, context, _info) => {
+    currentMealPlan: (_parent, _args, context) => {
       const id = FETCH_LATEST_MEAL_PLAN.get();
-      return context.dataLoaders.MealPlan.load(id);
+      return context.loaders.MealPlan.load(id);
     },
 
-    mealPlan: (_parent, { id }, context, _info) => {
-      return context.dataLoaders.MealPlan.load(id);
+    mealPlan: (_parent, { id }: { id: number }, context) => {
+      return context.loaders.MealPlan.load(id);
     },
 
-    planByDate: (_parent, { date }, context, _info) => {
+    planByDate: (_parent, { date }: { date: number }, context) => {
       const id = FETCH_PLAN_BY_DATE.get(date, date);
       if (!id) {
         return null;
       }
-      return context.dataLoaders.MealPlan.load(id);
+      return context.loaders.MealPlan.load(id);
     },
   },
 };

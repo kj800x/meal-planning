@@ -1,41 +1,33 @@
 import DataLoader from "dataloader";
-import { BurndownTargetLoaderType } from "./BurndownTarget";
-import { CrawlEventLoaderType } from "./CrawlEvent";
-import { FileLoaderType } from "./File";
-import { ImageFileLoaderType } from "./ImageFile";
-import { ItemLoaderType } from "./Item";
-import { ProviderSettingsLoaderType } from "./ProviderSettings";
-import { RegionLoaderType } from "./Region";
-import { SavedSearchLoaderType } from "./SavedSearch";
-import { SourceConfigLoaderType } from "./SourceConfig";
-import { SourceConfigListLoaderType } from "./SourceConfigList";
-import { TagLoaderType } from "./Tag";
-import { TagGroupLoaderType } from "./TagGroup";
-import { TextFileLoaderType } from "./TextFile";
-import { TimestampLoaderType } from "./Timestamp";
-import { UrlFileLoaderType } from "./URLFile";
-import { VideoFileLoaderType } from "./VideoFile";
+import { AllergenDataObject } from "../data-objects/Allergen";
+import { CuisineDataObject } from "../data-objects/Cuisine";
+import { GroceryAisleDataObject } from "../data-objects/GroceryAisle";
+import { IngredientDataObject } from "../data-objects/Ingredient";
+import { MealPlanDataObject } from "../data-objects/MealPlan";
+import { NutritionFactDataObject } from "../data-objects/NutritionFact";
+import { RecipeDataObject } from "../data-objects/Recipe";
+import { RecipeStepDataObject } from "../data-objects/RecipeStep";
+import { ScheduledExtraIngredientDataObject } from "../data-objects/ScheduledExtraIngredient";
+import { ScheduledMealDataObject } from "../data-objects/ScheduledMeal";
+import { UtensilDataObject } from "../data-objects/Utensil";
+import { YieldDataObject } from "../data-objects/Yield";
 
 export type DataLoaders = {
-  SourceConfigList: DataLoader<number, SourceConfigListLoaderType>;
-  SourceConfig: DataLoader<number, SourceConfigLoaderType>;
-  AdHocSourceConfig: DataLoader<number, any>;
-  AdHocSourceConfigTarget: DataLoader<number, any>;
-  BurndownTarget: DataLoader<number, BurndownTargetLoaderType>;
-  ProviderSettings: DataLoader<number, ProviderSettingsLoaderType>;
-  CrawlEvent: DataLoader<number, CrawlEventLoaderType>;
-  Item: DataLoader<number, ItemLoaderType>;
-  Region: DataLoader<number, RegionLoaderType>;
-  ImageFile: DataLoader<number, ImageFileLoaderType>;
-  TextFile: DataLoader<number, TextFileLoaderType>;
-  VideoFile: DataLoader<number, VideoFileLoaderType>;
-  URLFile: DataLoader<number, UrlFileLoaderType>;
-  Timestamp: DataLoader<number, TimestampLoaderType>;
-  TagGroup: DataLoader<number, TagGroupLoaderType>;
-  Tag: DataLoader<number, TagLoaderType>;
-  File: DataLoader<number, FileLoaderType>;
-  SavedSearch: DataLoader<number, SavedSearchLoaderType>;
-  RegionKey: DataLoader<number, number[]>;
+  Allergen: DataLoader<number, AllergenDataObject>;
+  Cuisine: DataLoader<number, CuisineDataObject>;
+  GroceryAisle: DataLoader<number, GroceryAisleDataObject>;
+  Ingredient: DataLoader<number, IngredientDataObject>;
+  MealPlan: DataLoader<number, MealPlanDataObject>;
+  NutritionFact: DataLoader<number, NutritionFactDataObject>;
+  Recipe: DataLoader<number, RecipeDataObject>;
+  RecipeStep: DataLoader<number, RecipeStepDataObject>;
+  ScheduledExtraIngredient: DataLoader<
+    number,
+    ScheduledExtraIngredientDataObject
+  >;
+  ScheduledMeal: DataLoader<number, ScheduledMealDataObject>;
+  Utensil: DataLoader<number, UtensilDataObject>;
+  Yield: DataLoader<number, YieldDataObject>;
 };
 
 export type Context = {

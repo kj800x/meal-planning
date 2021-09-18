@@ -25,6 +25,7 @@ async function main() {
         staticDir: path.resolve(__dirname, "../../ui/build/"),
         rootIndexFallback: true,
         priority: 0,
+        dirListings: false,
         type: "ui",
       },
       {
@@ -41,6 +42,8 @@ async function main() {
         route: "/meals/assets",
         staticDir: path.resolve(DATA_DIR, "assets/"),
         priority: 0,
+        rootIndexFallback: false,
+        dirListings: false,
         type: "data",
       },
     ],

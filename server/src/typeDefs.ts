@@ -111,20 +111,7 @@ export const typeDefs = gql`
     start: Date!
     end: Date!
     extraIngredients: [ScheduledExtraIngredient!]!
-    acquiredIngredients: [AcquiredIngredient!]!
     meals: [ScheduledMeal!]!
-  }
-  enum AcquisitionType {
-    HAVE
-    BOUGHT
-  }
-  type AcquiredIngredient {
-    type: AcquisitionType!
-    id: Int!
-    ingredient: Ingredient!
-    quantity: Float!
-    unit: String!
-    mealPlan: MealPlan!
   }
   type Query {
     groceryAisles: [GroceryAisle!]!
