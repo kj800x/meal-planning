@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useTitle(title) {
+export function useTitle(title: string) {
   useEffect(() => {
     if (title) {
       const previousTitle = document.title;
