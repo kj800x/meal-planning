@@ -1,6 +1,6 @@
 import { db } from "../db";
-import { get } from "./util/get";
-import { order } from "./util/loaderOrderer";
+import { get } from "../util/get";
+import { order } from "../util/loaderOrderer";
 
 const MEAL_LOADER = db.prepareIn(
   "SELECT * FROM ScheduledMeal WHERE id IN (!?!)"

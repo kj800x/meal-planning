@@ -1,6 +1,9 @@
 import { db } from "../db";
-// import { runIngredientSearch } from "../services/ingredientSearch";
-import { runRecipeSearch } from "../services/recipeSearch";
+import { NoLoaderDomainObject } from "../domain-objects/types";
+import { GroceryAisleLoaderType } from "../domain-objects/GroceryAisle";
+import { RecipeLoaderType } from "../domain-objects/Recipe";
+import { IngredientLoaderType } from "../domain-objects/Ingredient";
+import { MealPlanLoaderType } from "../domain-objects/MealPlan";
 
 const FETCH_ALL_GROCERY_AISLES = db
   .prepare("SELECT id FROM GroceryAisle ORDER BY ordering ASC")
@@ -18,7 +21,23 @@ const FETCH_PLAN_BY_DATE = db
   .prepare("SELECT id FROM MealPlan WHERE start <= ? AND ? <= end LIMIT 1")
   .pluck();
 
-export const Query = {
+type QueryType = {
+  groceryAisles: (GroceryAisleLoaderType | Error)[];
+  recipe: RecipeLoaderType;
+  searchIngredients: {
+    ingredients: Promise<(IngredientLoaderType | Error)[]>;
+    total: number;
+  };
+  searchRecipes: {
+    recipes: Promise<(RecipeLoaderType | Error)[]>;
+    total: number;
+  };
+  mealPlans: (MealPlanLoaderType | Error)[];
+  currentMealPlan: MealPlanLoaderType;
+  planByDate: MealPlanLoaderType;
+};
+
+export const Query: NoLoaderDomainObject<QueryType, null> = {
   resolver: {
     groceryAisles: (_parent, _args, context, _info) => {
       const aisles = FETCH_ALL_GROCERY_AISLES.all();
@@ -30,22 +49,16 @@ export const Query = {
     },
 
     searchIngredients: (_parent, { query, limit, offset }, context, _info) => {
-      // const { ingredients, total } = runIngredientSearch({
-      //   query,
-      //   limit,
-      //   offset,
-      // });
       return {
-        ingredients: [], //context.dataLoaders.Ingredient.loadMany(ingredients),
+        ingredients: [],
         total: 0,
       };
     },
 
     searchRecipes: (_parent, { query, limit, offset }, context, _info) => {
-      const { recipes, total } = runRecipeSearch({ query, limit, offset });
       return {
-        recipes: context.dataLoaders.Recipe.loadMany(recipes),
-        total: total,
+        recipes: [],
+        total: 0,
       };
     },
 

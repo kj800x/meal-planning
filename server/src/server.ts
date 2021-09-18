@@ -1,18 +1,20 @@
+import "./logSetup";
 import express from "express";
 import http from "http";
 import path from "path";
 import process from "process";
 import * as localproxy from "@kj800x/localproxy-client";
 import { DATA_DIR } from "./env/dataDir";
-
 import { apolloServer } from "./schema";
+
+import log from "loglevel";
 
 async function main() {
   const PORT = await localproxy.getAvailablePort();
   const expressApp = express();
   const httpServer = http.createServer(expressApp);
 
-  const localproxyConfig = {
+  const localproxyConfig: localproxy.LocalproxyApp = {
     id: "meals",
     name: "Meal Planner",
     pid: process.pid,
@@ -48,13 +50,15 @@ async function main() {
     app: expressApp,
     path: "/meals/graphql",
   });
-  apolloServer.installSubscriptionHandlers(httpServer);
 
   const runningHttpServer = httpServer.listen(PORT, async () => {
-    console.log(
-      `🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
-    );
     localproxy.register(localproxyConfig);
+
+    setTimeout(async () => {
+      log.info(
+        `🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
+      );
+    }, 10);
   });
 
   process.on("SIGINT", () => {
@@ -64,4 +68,4 @@ async function main() {
   });
 }
 
-main().catch(console.error);
+main().catch(log.error);

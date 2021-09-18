@@ -1,10 +1,18 @@
 import fs from "fs";
+import loglevel from "loglevel";
 import path from "path";
+
+const log = loglevel.getLogger("data-migrator");
+
+export type Migration = (dataDir: string) => void;
 
 const MANIFEST_FILE = "manifest.json";
 
 class BoundDataMigrator {
-  constructor(migrations, dataDir) {
+  dataDir: string;
+  migrations: Migration[];
+
+  constructor(migrations: Migration[], dataDir: string) {
     this.migrations = migrations;
     this.dataDir = dataDir;
   }
@@ -32,7 +40,8 @@ class BoundDataMigrator {
       const json = JSON.parse(contents);
       return json;
     } catch (e) {
-      throw new Error("[DATA MIGRATOR] Manifest file was in unexpected format");
+      log.error("Manifest file was in unexpected format");
+      throw new Error("Manifest file was in unexpected format");
     }
   }
 
@@ -40,7 +49,7 @@ class BoundDataMigrator {
     return this.migrations.length;
   }
 
-  setManifestVersion(version) {
+  setManifestVersion(version: number) {
     const manifest = this.getManifest();
     manifest.version = version;
     fs.writeFileSync(
@@ -49,9 +58,9 @@ class BoundDataMigrator {
     );
   }
 
-  executeMigration(index) {
-    console.log(`[DATA MIGRATOR] Running migration ${index + 1}`);
-    const migration = this.migrations[index];
+  executeMigration(index: number) {
+    log.info("Running migration", index + 1);
+    const migration = this.migrations[index]!;
     migration(this.dataDir);
     this.setManifestVersion(index + 1);
   }
@@ -65,8 +74,8 @@ class BoundDataMigrator {
     }
 
     if (version > target) {
-      console.warn(
-        "[DATA MIGRATOR] Manifest version is newer than expected. This app might not work. YOLO"
+      log.warn(
+        "Manifest version is newer than expected. This app might not work. YOLO"
       );
       return;
     }
@@ -78,11 +87,13 @@ class BoundDataMigrator {
 }
 
 export class DataMigrator {
-  constructor(migrations) {
+  migrations: Migration[];
+
+  constructor(migrations: Migration[]) {
     this.migrations = migrations;
   }
 
-  useDataDir(dataDir) {
+  useDataDir(dataDir: string) {
     return new BoundDataMigrator(this.migrations, dataDir);
   }
 }

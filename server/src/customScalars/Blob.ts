@@ -3,9 +3,9 @@ import { Kind } from "graphql/language";
 
 export default new GraphQLScalarType({
   name: "Blob",
-  description: "Blob as represented by getTime",
-  parseValue(value) {
-    return new Buffer(...value); // value from the client
+  description: "Blob buffer",
+  parseValue(value: number[]) {
+    return Buffer.from(value);
   },
   serialize(value) {
     if (value instanceof Buffer) {
@@ -17,8 +17,7 @@ export default new GraphQLScalarType({
   },
   parseLiteral(ast) {
     if (ast.kind === Kind.LIST) {
-      // console.log(ast);
-      throw new Error("TODO Need implements");
+      throw new Error("TODO needs implementation");
     }
     return null;
   },
