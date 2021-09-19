@@ -24,6 +24,7 @@ import {
 } from "../data-objects/Utensil";
 import {
   fetchByRecipeAndServings,
+  fetchByRecipe,
   fetchValidServingsByRecipeId,
   YieldDataObject,
 } from "../data-objects/Yield";
@@ -45,6 +46,7 @@ interface RecipeGQLType {
   utensils: (UtensilDataObject | Error)[];
   steps: (RecipeStepDataObject | Error)[];
   ingredients: (YieldDataObject | Error)[];
+  allServingIngredients: (YieldDataObject | Error)[];
   validServings: number[];
 }
 
@@ -82,6 +84,10 @@ export const Recipe: DomainObject<RecipeGQLType, RecipeDataObject> = {
     },
     ingredients: ({ id }, { servings }, context) => {
       const results = fetchByRecipeAndServings(id, servings);
+      return context.loaders.Yield.loadMany(results);
+    },
+    allServingIngredients: ({ id }, _, context) => {
+      const results = fetchByRecipe(id);
       return context.loaders.Yield.loadMany(results);
     },
     validServings: ({ id }) => {

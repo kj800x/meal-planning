@@ -47,6 +47,7 @@ export const typeDefs = gql`
     utensils: [Utensil!]!
     steps: [RecipeStep!]!
     ingredients(servings: Int): [Yield!]!
+    allServingIngredients: [Yield!]!
     validServings: [Int!]!
 
     source: String!
@@ -115,7 +116,7 @@ export const typeDefs = gql`
   }
   type Query {
     groceryAisles: [GroceryAisle!]!
-    recipe(id: Int): Recipe
+    recipe(id: Int): Recipe!
     searchIngredients(
       query: String!
       limit: Int = 30
@@ -143,6 +144,7 @@ export const typeDefs = gql`
     ): MealPlan!
     moveMeal(mealId: Int!, type: String!, date: Date): MealPlan!
     cancelMeal(mealId: Int!): MealPlan!
+    createRecipe(title: String!): Recipe!
   }
 
   schema {

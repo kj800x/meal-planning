@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import styled from "styled-components";
 
-const InputComponent = styled.input`
+const SearchInputComponent = styled.input`
   padding: 0.2rem 0.8rem;
   border-radius: 2rem;
   box-shadow: inset 0 0 0 0.5px #7c98b6;
@@ -20,14 +20,18 @@ const InputComponent = styled.input`
   box-sizing: border-box;
 `;
 
-interface InputProps {
+interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }
 
-export const Input: FC<InputProps> = ({ value, onChange, placeholder }) => (
-  <InputComponent
+export const SearchInput: FC<SearchInputProps> = ({
+  value,
+  onChange,
+  placeholder,
+}) => (
+  <SearchInputComponent
     type="text"
     autoComplete="off"
     spellCheck={false}

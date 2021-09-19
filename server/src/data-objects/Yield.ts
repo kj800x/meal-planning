@@ -20,6 +20,14 @@ export function fetchByRecipeAndServings(
   return FETCH_BY_RECIPE_AND_SERVINGS.all(recipeId, servings);
 }
 
+const FETCH_BY_RECIPE = db
+  .prepare("SELECT id FROM Yield WHERE recipeId = ?")
+  .pluck();
+
+export function fetchByRecipe(recipeId: number): number[] {
+  return FETCH_BY_RECIPE.all(recipeId);
+}
+
 const FETCH_VALID_SERVINGS = db
   .prepare("SELECT DISTINCT servings FROM Yield WHERE recipeId = ?")
   .pluck();

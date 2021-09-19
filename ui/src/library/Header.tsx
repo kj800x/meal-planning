@@ -1,11 +1,11 @@
-import { faLeaf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const HeaderWrapper = styled.div`
   border-radius: 0.5875rem 0.5875rem 0 0;
   padding: 1.5rem;
-  background: linear-gradient(#609848, #98c068);
+  // background: linear-gradient(blue, purple);
+  border-bottom: 4px solid green;
 
   flex-direction: row;
   justify-content: center;
@@ -13,23 +13,44 @@ const HeaderWrapper = styled.div`
   display: flex;
 `;
 
-const Icon = styled.div`
-  height: 100px;
-  width: 100px;
+const AppName = styled.div`
+  font-size: 75px;
+`;
 
-  & > svg {
-    width: 100%;
-    height: 100%;
-    font-size: 75px;
-    color: #287028;
+const NavWrapper = styled.div`
+  max-width: 1200px;
+  background: lightblue;
+  display: flex;
+  margin: 0 auto;
+`;
+
+const StyledNavLink = styled(NavLink)`
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  font-size: 20px;
+  text-decoration: none;
+  color: black;
+  border: 4px solid green;
+  border-top: none;
+
+  border-left: none;
+  &:first-child {
+    border-left: 4px solid green;
   }
 `;
+
 export const Header = () => {
   return (
-    <HeaderWrapper>
-      <Icon>
-        <FontAwesomeIcon icon={faLeaf} />
-      </Icon>
-    </HeaderWrapper>
+    <>
+      <HeaderWrapper>
+        <AppName>Meal Planner</AppName>
+      </HeaderWrapper>
+      <NavWrapper>
+        <StyledNavLink to={"/"}>Recipes</StyledNavLink>
+        <StyledNavLink to={"/plans"}>Plans</StyledNavLink>
+        <StyledNavLink to={"/ingredients"}>Ingredients</StyledNavLink>
+      </NavWrapper>
+    </>
   );
 };

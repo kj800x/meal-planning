@@ -8,7 +8,7 @@ const url = new URL(window.location.href);
 
 const uri = `${url.protocol}//${url.host}${
   url.port ? `:${url.port}` : ""
-}/life-logger/graphql`;
+}/meals/graphql`;
 
 const client = new ApolloClient({
   uri,
