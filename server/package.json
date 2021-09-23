@@ -33,7 +33,7 @@
     "cli": "npm run build && node lib/migrations/runMigrations.js && node lib/cli/cli.js",
     "migrate": "npm run build && node lib/migrations/runMigrations.js",
     "build": "tsc --build && copyfiles -u 1 src/**/*.sql lib/",
-    "import-hello-fresh": "RECIPE_DIR=/hdd/crawl-hello-fresh/out/recipes node -r esm src/cli/importHelloFresh.js"
+    "import-hello-fresh": "npm run build && RECIPE_DIR=/hdd/crawl-hello-fresh/out/recipes node lib/cli/importHelloFresh.js"
   },
   "author": "Kevin Johnson <kj800x@gmail.com>",
   "license": "MIT"
