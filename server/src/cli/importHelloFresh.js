@@ -52,7 +52,7 @@ function addHelperMethods(db) {
     db.findIngredient,
     (ingredient) => [ingredient.id],
     db.insertIngredient,
-    (ingredient) => [ingredient.id, ingredient.name, ingredient.iconPath]
+    (ingredient) => [ingredient.id, ingredient.name, ingredient.imagePath]
   );
   db.insertNutritionFact = db.prepare(
     "INSERT INTO NutritionFact (recipeId, name, amount, unit) VALUES (?, ?, ?, ?)"
