@@ -9,6 +9,7 @@ import { ErrorDisplay } from "../../library/ErrorDisplay";
 import { Loading } from "../../library/Loading";
 import { Step } from "./Step";
 import { Ingredients } from "./Ingredients";
+import { parse } from "iso8601-duration";
 
 const Wrapper = styled.div`
   display: flex;
@@ -111,9 +112,9 @@ const Utensil = styled.li`
 const Time = styled.div`
   margin: 0 0 16px;
 `;
-const Rating = styled.div`
-  margin: 16px 0;
-`;
+// const Rating = styled.div`
+//   margin: 16px 0;
+// `;
 const Label = styled.span`
   font-weight: 600;
   margin-right: 8px;
@@ -152,6 +153,8 @@ const FactWrapper = styled.div`
 const RecipeDetails: FC<{ recipe: RecipeDetailsQuery["recipe"] }> = ({
   recipe,
 }) => {
+  const time = recipe.time ? parse(recipe.time) : null;
+
   return (
     <Wrapper>
       <Hero>
@@ -179,12 +182,50 @@ const RecipeDetails: FC<{ recipe: RecipeDetailsQuery["recipe"] }> = ({
         <RightBlock>
           <Time>
             <Label>Total Time:</Label>
-            {recipe.time}
+            {time && (
+              <span>
+                {time.years ? (
+                  <span>
+                    {time.years} year{time.years === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {time.weeks ? (
+                  <span>
+                    {time.weeks} week{time.weeks === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {time.months ? (
+                  <span>
+                    {time.months} month{time.months === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {time.days ? (
+                  <span>
+                    {time.days} day{time.days === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {time.hours ? (
+                  <span>
+                    {time.hours} hour{time.hours === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {time.minutes ? (
+                  <span>
+                    {time.minutes} minute{time.minutes === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {time.seconds ? (
+                  <span>
+                    {time.seconds} second{time.seconds === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+              </span>
+            )}
           </Time>
-          <Rating>
+          {/* <Rating>
             <Label>Rating:</Label>
             {recipe.rating}
-          </Rating>
+          </Rating> */}
         </RightBlock>
       </HBlock>
       <HBlock>
