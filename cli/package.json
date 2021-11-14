@@ -1,0 +1,12 @@
+{
+  "name": "cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "import-hello-fresh": "RECIPE_DIR=/hdd/crawl-hello-fresh/out/recipes node import-hello-fresh.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
