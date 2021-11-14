@@ -4,6 +4,7 @@ import { GroceryAisleDataObject } from "../data-objects/GroceryAisle";
 import { RecipeDataObject } from "../data-objects/Recipe";
 import { IngredientDataObject } from "../data-objects/Ingredient";
 import { MealPlanDataObject } from "../data-objects/MealPlan";
+import { searchRecipes } from "../services/searchRecipes";
 
 const FETCH_ALL_GROCERY_AISLES = db
   .prepare("SELECT id FROM GroceryAisle ORDER BY ordering ASC")
@@ -38,7 +39,7 @@ type QueryType = {
   planByDate: Promise<MealPlanDataObject> | null;
 };
 
-interface SearchArgs {
+export interface SearchArgs {
   query: string;
   offset: number;
   limit: number;
@@ -66,10 +67,12 @@ export const Query: NoLoaderDomainObject<QueryType, null> = {
       };
     },
 
-    searchRecipes: (_parent, _searchArgs: SearchArgs, _context) => {
+    searchRecipes: (_parent, searchArgs: SearchArgs, context) => {
+      const { ids, total } = searchRecipes(searchArgs);
+
       return {
-        recipes: Promise.resolve([]),
-        total: 0,
+        recipes: context.loaders.Recipe.loadMany(ids),
+        total,
       };
     },
 

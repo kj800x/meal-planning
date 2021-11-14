@@ -36,7 +36,7 @@ export const typeDefs = gql`
     id: Int!
     recipe: Recipe!
     name: String!
-    amount: Int!
+    amount: Float!
     unit: String!
   }
   type Recipe {

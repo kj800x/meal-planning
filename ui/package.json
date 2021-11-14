@@ -27,6 +27,7 @@
     "@fortawesome/free-regular-svg-icons": "5.15.4",
     "@fortawesome/free-solid-svg-icons": "5.15.4",
     "@fortawesome/react-fontawesome": "0.1.15",
+    "format-quantity": "^1.0.1",
     "graphql": "15.5.2",
     "iso8601-duration": "^1.3.0",
     "loaders.css": "0.1.2",
